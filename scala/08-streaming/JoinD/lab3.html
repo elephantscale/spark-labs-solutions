@@ -1,0 +1,96 @@
+<p><a href="../README.md">&lt;&lt; back to main index</a> / <a href="./README.md">Streaming labs</a></p>
+<h1 id="lab-3---spark-streaming---this-lab-shows-you-how-to-join-multiple-labs">Lab 3 - Spark Streaming - This lab shows you how to join multiple labs</h1>
+<h3 id="overview">Overview</h3>
+<p>One of the most useful features of Spark Streaming is your ability to join multiple DSTreams based on the common key pairs. This lab gives you the Join operator example.</p>
+<h3 id="depends-on">Depends On</h3>
+<p>None</p>
+<h3 id="run-time">Run time</h3>
+<p>10-20 mins</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>STEP 1: Edit source file</td>
+</tr>
+</tbody>
+</table>
+<p>Go to the project root directory</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1">$    <span class="bu">cd</span> ~/spark-labs/streaming/lab3</a></code></pre></div>
+<p><strong>edit file : <code>src/main/scala/join.scala</code></strong><br />
+<strong>And fix the TODO items</strong></p>
+<pre><code>$    vi  src/main/scala/Joind.scala
+# or 
+$    nano  src/main/scala/Joind.scala</code></pre>
+<table>
+<tbody>
+<tr class="odd">
+<td>STEP 2: Compile the project</td>
+</tr>
+</tbody>
+</table>
+<p>We will use <code>sbt</code> to build the project.</p>
+<p><strong>Inspect the <code>build.sbt</code> file</strong></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" data-line-number="1">$  <span class="fu">cat</span>   build.sbt</a></code></pre></div>
+<p>The file will look follows:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co">// blank lines are important!</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">name := “Join DStreams“</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">version := <span class="st">&quot;1.0&quot;</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">scalaVersion := <span class="st">&quot;2.10.4&quot;</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">libraryDependencies ++= Seq(</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">  <span class="st">&quot;org.apache.spark&quot;</span> %% <span class="st">&quot;spark-core&quot;</span> % <span class="st">&quot;1.3.1&quot;</span> % <span class="st">&quot;provided&quot;</span>,</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">  <span class="st">&quot;org.apache.spark&quot;</span> %% <span class="st">&quot;spark-streaming&quot;</span> % <span class="st">&quot;1.3.1&quot;</span> % <span class="st">&quot;provided&quot;</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" data-line-number="1">$   <span class="ex">sbt</span> package</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># to do a clean rebuild use</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#  sbt clean package</span></a></code></pre></div>
+<p>Make sure there are no errors and there is output in <code>target</code> dir.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" data-line-number="1">$  <span class="fu">ls</span> -l   target/scala-2.10</a></code></pre></div>
+<p>You should see output like follows</p>
+<pre><code>drwxr-xr-x  3 vsistla  staff   102B Apr 16 09:59 classes/
+-rw-r--r--  1 vsistla  staff    13K Apr 16 09:59 joind_2.10-1.0.jar</code></pre>
+<p><code>joind_2.10-1.0.jar</code> is our code compiled.</p>
+<table style="width:38%;">
+<colgroup>
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>STEP 3: Run The Application</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>$  ~/spark-labs/streaming/lab3/sbt run</code> Note - hope you have modified log4j.properties in conf folder to remove verbose.</td>
+</tr>
+<tr class="even">
+<td>Lets call this Terminal #1</td>
+</tr>
+</tbody>
+</table>
+<h2 id="step-4-run-netcat-server-to-send-text-through-tcp-connection.">STEP 4: Run Netcat Server to send text through TCP connection.</h2>
+<p>Use nc command to move text you type in terminal to port 9999 Open an terminal and run this command at prompt</p>
+<p>$ nc -lk 9999</p>
+<p>Lets call this Terminal #2</p>
+<table style="width:36%;">
+<colgroup>
+<col style="width: 36%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>STEP 5: Test by copying the sample data from sample-join.csv file. Please note that this data is modified for this example.</td>
+</tr>
+</tbody>
+</table>
+<p>In the Terminal #2, copy and paste as many lines from sample-join.csv file and see the application display the IPs in Terminal #1</p>
+<table>
+<tbody>
+<tr class="odd">
+<td>STEP 6: Also can print to a file in your file system</td>
+</tr>
+</tbody>
+</table>
+<p>Comment and uncomment respective lines to test this.</p>
+<p>End.</p>
