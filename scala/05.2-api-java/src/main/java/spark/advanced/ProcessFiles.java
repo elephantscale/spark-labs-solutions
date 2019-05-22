@@ -1,5 +1,6 @@
 package spark.advanced;
 
+import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.SparkSession;
 
 
@@ -15,9 +16,10 @@ file to process can be :  /etc/hosts
 
 e.g:
 - with 4G executor memory and turning off verbose logging
-    spark-submit --class 'spark.advanced.ProcessFiles'  --master spark://localhost:7077 --executor-memory 4g  --driver-class-path logging/   target/spark.advanced-0.0.1-SNAPSHOT-jar-with-dependencies.jar   s3n:///elephantscale-public/data/twinkle/1G.data
+    ~/spark/bin/spark-submit --class 'spark.advanced.ProcessFiles'  --master local[*] --executor-memory 4g  --driver-class-path logging/   target/spark.advanced-2.11-jar-with-dependencies.jar   /data/text/twinkle/1G.data
 
  */
+
 public class ProcessFiles {
 
 	public static void main(String[] args) {
@@ -26,24 +28,19 @@ public class ProcessFiles {
 			System.exit(1);
 		}
 		// ## TODO 1 : give a name
-		SparkSession spark = SparkSession.builder().appName("Process Files --MyName").getOrCreate();
+		SparkSession spark = SparkSession.builder().appName("Process Files -- ES-Solutions").getOrCreate();
 		for(String aFile : args) {
 			// looping over files
 
 			// ## TODO 2 : create an RDD out of file 
 			//    hint :  spark.read().textFile(file)
-			/*Dataset<String> fileDataSet = ???;
+			Dataset<String> fileDataSet = spark.read().textFile(aFile);
 			Long t1 = System.nanoTime();
 
 			// ## TODO 3 : count # of elements in RDD
-			Long count = ???;
+			Long count = fileDataSet.count();
 			Long t2 = System.nanoTime();
-			System.out.println (String.format("### %s : count: %,d, Timetook: %,d ms",aFile, count, (t2-t1)/1000000 ));
-			 */
-			
-			// HACK : so the 4040 UI stays alive :-)
-			System.out.println("### Hit enter to terminate the program...:");
-			String line = System.console().readLine();
+			System.out.println (String.format("### %s : count: %,d, Time taken: %,d ms",aFile, count, (t2-t1)/1000000 ));
 			spark.stop(); // close the session
 		}
 	}
