@@ -1,9 +1,3 @@
-package spark.advanced;
-
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.SparkSession;
-
-
 /*
 Usage:
 spark-submit --class 'spark.advanced.ProcessFiles' --master spark://localhost:7077  target/spark.advanced-0.0.1-SNAPSHOT-jar-with-dependencies.jar    <files to process>
@@ -20,6 +14,10 @@ e.g:
 
  */
 
+package spark.advanced;
+
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.SparkSession;
 public class ProcessFiles {
 
 	public static void main(String[] args) {

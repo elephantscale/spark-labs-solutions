@@ -26,11 +26,11 @@ It affects join results.
 Go to the project root directory
 
 ```bash
-    $    cd ~/spark-labs/06-api-java
+    $    cd <lab-folder>
 ```
 
 
-**=> Edit file : `~/spark-labs/06-api-java/src/main/java/spark/basic/Shuffling.java`**  
+**=> Edit file : `src/main/java/spark/basic/Shuffling.java`**  
 **=> And fix the TODO items**
 
 
@@ -41,65 +41,8 @@ We will use `maven` to build the project.
 
 **=> Inspect the `pom.xml` file**
 
-The file will look follows:
 
-``````
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.elephantscale</groupId>
-  <artifactId>spark.basic</artifactId>
-  <version>2.11</version>
-   <properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-  <dependencies>
-		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
-		<dependency>
-			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-core_2.11</artifactId>
-			<version>2.3.2</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
-		<dependency>
-			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-sql_2.11</artifactId>
-			<version>2.3.2</version>
-		</dependency>
-
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<!-- get all project dependencies -->
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<!-- bind to the packaging phase -->
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-````````
-
-**=> Kick off a build**  
-(This will take a few minutes for the first time you run it)
+**=> Do the build**  
 
 ```bash
     # be in the project root level directory
@@ -171,7 +114,7 @@ Use the following command to submit the job
 ```bash
     $  cd  ~/spark-labs/06-api-java
 
-    $   ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar 2>logs
+    $   ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar 2>logs
 ```
 
 * MASTER URL : substitute your spark master url
