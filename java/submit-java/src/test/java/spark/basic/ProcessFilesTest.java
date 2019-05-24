@@ -6,7 +6,9 @@ import java.util.List;
 import static junit.framework.TestCase.assertTrue;
 
 public class ProcessFilesTest {
-    private String testRun = "/Users/markkerzner/spark/bin/spark-submit" +
+    String home = System.getProperty("user.home");
+    private String testRun = home + "/" +
+            "/spark/bin/spark-submit" +
             " --class 'spark.basic.ProcessFiles'" +
             " --master local[*]" +
             " --executor-memory 4g" +
