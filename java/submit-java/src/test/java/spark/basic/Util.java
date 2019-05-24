@@ -5,13 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Util {
     public static List<String> runUnixCommand(String command) {
+        System.out.println("Running command; " + command);
         ArrayList<String> output = new ArrayList<String>();
         String s= "";
         try {
-
             Process p = Runtime.getRuntime().exec(command);
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -29,4 +30,5 @@ public class Util {
         }
         return output;
     }
+
 }
