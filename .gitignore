@@ -37,6 +37,7 @@ project/plugins/project/
 
 # IntelliJ
 .idea/
+*.iml
 
 # python
 .ipynb_checkpoints
