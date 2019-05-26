@@ -6,9 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="submit-java" />
-        <module name="spark.advanced" />
+        <module name="spark.basic" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spark.basic" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>
