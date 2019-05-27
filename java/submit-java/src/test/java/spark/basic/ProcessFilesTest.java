@@ -1,7 +1,6 @@
 package spark.basic;
 import org.junit.Test;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;

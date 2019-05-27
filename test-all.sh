@@ -1,4 +1,4 @@
 cd java/submit-java/
-mvn clean install
-cd ..
+mvn -Dmaven.test.skip=true clean package test
+cd ../..
 
