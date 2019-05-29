@@ -22,31 +22,31 @@ e.g:
 object ProcessFiles {
   def main(args: Array[String]) {
     if (args.length < 1) {
-        println ("need file(s) to load")
-        System.exit(1)
+      println("need file(s) to load")
+      System.exit(1)
     }
 
     // ## TODO 1 : give a name
     val spark = SparkSession.builder().
-                appName("Process Files -- MYNAME").
-                getOrCreate()
+      appName("Process Files -- ES Solution").
+      getOrCreate()
 
     var file = ""
     for (file <- args) { // looping over files
       // ## TODO 2 : create an RDD out of file 
       //    hint :  spark.read.textFile(file)
-      val f = ???
+      val f = file
       val t1 = System.nanoTime()
       // ## TODO 3 : count # of elements in RDD
-      val count = f.???
+      val count = f.count(_)
       val t2 = System.nanoTime()
 
-       println("### %s: count:  %,d ,  time took:  %,f ms".format(file, count, (t2-t1)/1e6))
-      }
+      println("### %s: count:  %,d ,  time took:  %,f ms".format(file, count, (t2 - t1) / 1e6))
+    }
 
-      // HACK : so the 4040 UI stays alive :-)
-      println("### Hit enter to terminate the program...:")
-      val line = Console.readLine
-      spark.stop()  // close the session
-   }
+    // HACK : so the 4040 UI stays alive :-)
+    //      println("### Hit enter to terminate the program...:")
+    //      val line = Console.readLine
+    spark.stop() // close the session
+  }
 }
