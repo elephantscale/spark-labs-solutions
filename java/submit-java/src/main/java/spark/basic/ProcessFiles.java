@@ -18,6 +18,9 @@ package spark.basic;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.SparkSession;
+
+import java.util.Scanner;
+
 public class ProcessFiles {
 
 	public static void main(String[] args) {
@@ -39,6 +42,12 @@ public class ProcessFiles {
 			Long count = fileDataSet.count();
 			Long t2 = System.nanoTime();
 			System.out.println (String.format("### %s : count: %,d, Time taken: %,d ms",aFile, count, (t2-t1)/1000000 ));
+
+			// HACK : so the 4040 UI stays alive :-)
+//			System.out.println("### Hit enter to terminate the program...:");
+//			Scanner scanner = new Scanner(System.in);
+//			String username = scanner.next();
+
 			spark.stop(); // close the session
 		}
 	}
