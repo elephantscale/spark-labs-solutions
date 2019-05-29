@@ -24,15 +24,27 @@ object Clickstream {
     val spark = SparkSession.builder().
                 appName("Clicks -- MYNAME").
                 getOrCreate()
+    import spark.implicits._
 
+    println ("### Ahoy mate, fix TODO items!")
 
-    val clickstream = spark.read.json(input)
+    // ## TODO-1 : create an input df;
+    // hint : spark.read.json(input)
+    /*
+    val clickstream = ???
 
-    val count =  clickstream.count
+    // TODO-2  : count how many records we have
+    val count =  ???
     println("### total clickstream records " + count)
+    */
 
-    val domainCount = clickstream.groupBy("domain").count()
+    // TODO-3 : count traffic per domain
+    /*
+    val domainCount = clickstream.groupBy("???").count()
 
-    domainCount.orderBy("count").show()
+    // display domainCount (hint : show)
+    domainCount.???
+    */
+
   }
 }

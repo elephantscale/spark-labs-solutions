@@ -1,17 +1,10 @@
-Spark API solutions
-===================
+<link rel='stylesheet' href='../assets/css/main.css'/>
 
-For instructions refer to README.md in the labs
+<< [back to main index](../README.md)
 
-src/main/scala/x/ProcessFiles.scala 
-    counts number of lines in each file given
+Spark API
+======
 
-src/main/scala/x/Clicks.scala 
-    Clickstream analysis using mapreduce.
-    Calculates traffic by domain
-    And find top 10 domains by traffic
-
-
-src/main/scala/x/Benchmark.scala 
-    Benchmarks read times for reading files from Amazon S3 and cached files.
+* [First Job Submission](5.1-submit.md)
+* [Map Reduce Job](5.2-mapreduce.md)
 
