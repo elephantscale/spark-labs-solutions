@@ -33,15 +33,15 @@ object ProcessFiles {
 
     var file = ""
     for (file <- args) { // looping over files
-      // ## TODO 2 : create an RDD out of file 
+      // ## TODO 2 : create an RDD out of file
       //    hint :  spark.read.textFile(file)
-      val f = file
+      val f = spark.read.textFile(file)
       val t1 = System.nanoTime()
       // ## TODO 3 : count # of elements in RDD
-      val count = f.count(_)
-      val t2 = System.nanoTime()
+      val count = f.count
 
-      println("### %s: count:  %,d ,  time took:  %,f ms".format(file, count, (t2 - t1) / 1e6))
+      val t2 = System.nanoTime()
+      println("### %s: count:  %,d ,  time took:  %,f ms".format(file, count, (t2-t1)/1e6))
     }
 
     // HACK : so the 4040 UI stays alive :-)
