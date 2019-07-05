@@ -19,10 +19,18 @@ public class ProcessFilesTest {
 
     @Test
     public void testSparkSubmit() throws IOException {
-        System.out.println("testSparkSubmit");
+        System.out.println("testSparkSubmitExternal");
         List<String> output = Util.runUnixCommand(testRun);
         String first = output.get(0);
         System.out.println(first);
         assertTrue(first.contains("count: 31,300,777"));
     }
+
+    @Test
+    public void testSpark() throws IOException {
+        System.out.println("testSparkSubmit");
+        String[] argv = {"Shalom"};
+        ProcessFiles.main(argv);
+    }
+
 }
