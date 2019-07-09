@@ -13,6 +13,7 @@ public class ProcessFilesTest {
     String project = System.getProperty("user.dir");
     private String testRun = home +
           "/spark/bin/spark-submit" +
+           " --master local[*]" +
            " --class spark.basic.ProcessFiles" +
            " " + project + "/" +  "target/spark.basic-2.11.jar" +
            " /data/text/twinkle/1G.data";
@@ -26,11 +27,11 @@ public class ProcessFilesTest {
         assertTrue(first.contains("count: 31,300,777"));
     }
 
-    @Test
-    public void testSpark() throws IOException {
-        System.out.println("testSparkSubmit");
-        String[] argv = {"Shalom"};
-        ProcessFiles.main(argv);
-    }
+//    @Test
+//    public void testSpark() throws IOException {
+//        System.out.println("testSparkSubmit");
+//        String[] argv = {"Shalom"};
+//        ProcessFiles.main(argv);
+//    }
 
 }

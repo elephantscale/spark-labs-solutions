@@ -1,6 +1,5 @@
 cd java/submit-java/
-mvn -Dmaven.test.skip=true clean package
-mvn test
+./test.sh
 cd ../..
 cd scala/05-api
 sbt package
