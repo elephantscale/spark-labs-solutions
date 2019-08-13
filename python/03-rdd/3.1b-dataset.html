@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>4.2-sql-python-soultions</title>
+<title>3.1b-dataset</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13116,13 +13116,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<link rel='stylesheet' href='../assets/css/main.css'/>
-
-<p><a href="../README.md">&lt;&lt; back to main index</a></p>
-<h1 id="Lab-4.2-:-Spark-SQL">Lab 4.2 : Spark SQL<a class="anchor-link" href="#Lab-4.2-:-Spark-SQL">&#182;</a></h1><h3 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h3><p>Using SQL statements with Spark SQL.</p>
-<h3 id="Depends-On">Depends On<a class="anchor-link" href="#Depends-On">&#182;</a></h3><p>None</p>
-<h3 id="Run-time">Run time<a class="anchor-link" href="#Run-time">&#182;</a></h3><p>20-30 mins</p>
-
+<h1 id="Lab-3.1b-:-Python-Dataframe-Basics-operations">Lab 3.1b : Python Dataframe Basics operations<a class="anchor-link" href="#Lab-3.1b-:-Python-Dataframe-Basics-operations">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -13162,7 +13156,7 @@ Spark config:
 	 spark.app.name=TestApp
 	spark.master=local[*]
 	executor.memory=2g
-	spark.sql.warehouse.dir=/tmp/tmpdlzv3je4
+	spark.sql.warehouse.dir=/tmp/tmp9e5drn_o
 	some_property=some_value
 Spark UI running on port 4042
 </pre>
@@ -13176,7 +13170,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-1:-Load-Clickstream-data">STEP 1: Load Clickstream data<a class="anchor-link" href="#STEP-1:-Load-Clickstream-data">&#182;</a></h2>
+<h2 id="Step-1-:-Load-sample-file">Step 1 : Load sample file<a class="anchor-link" href="#Step-1-:-Load-sample-file">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13185,9 +13179,9 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">clickstreamDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">&quot;/data/click-stream/clickstream.json&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">clickstreamDF</span><span class="p">)</span>
-<span class="n">clickstreamDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;/data/text/twinkle/sample.txt&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13204,31 +13198,16 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>DataFrame[action: string, campaign: string, cost: bigint, domain: string, ip: string, session: string, timestamp: bigint, user: string]
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|
-|blocked|campaign_12|   5|     facebook.com|ip_3|session_96|1420070400864|user_5|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|
-|blocked|campaign_18| 110|    wikipedia.org|ip_5|session_55|1420070402592|user_6|
-|clicked| campaign_6|  15|comedycentral.com|ip_9|session_49|1420070403456|user_4|
-|blocked| campaign_9| 139|          cnn.com|ip_8|session_13|1420070404320|user_7|
-|blocked| campaign_4| 171|   funnyordie.com|ip_1|session_92|1420070405184|user_9|
-|blocked|campaign_17|  20|       amazon.com|ip_4|session_13|1420070406048|user_1|
-|blocked|campaign_20|  78|        zynga.com|ip_5|session_36|1420070406912|user_3|
-|blocked|campaign_19| 147|      nytimes.com|ip_2|session_65|1420070407776|user_6|
-| viewed| campaign_5|  50|    wikipedia.org|ip_5|session_10|1420070408640|user_6|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|
-| viewed|campaign_19|   0|sf.craigslist.org|ip_9|session_19|1420070410368|user_7|
-| viewed| campaign_1|  24|        yahoo.com|ip_4|session_60|1420070411232|user_8|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|
-|blocked| campaign_2|   7|      youtube.com|ip_2|session_93|1420070412960|user_1|
-|blocked| campaign_9| 153|       google.com|ip_3|session_22|1420070413824|user_9|
-|blocked| campaign_8| 140|comedycentral.com|ip_8| session_4|1420070414688|user_2|
-|blocked|campaign_19|  23|       amazon.com|ip_5|session_85|1420070415552|user_7|
-| viewed|campaign_20| 133|       google.com|ip_9|session_69|1420070416416|user_7|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
+<pre>5
++--------------------+
+|               value|
++--------------------+
+|twinkle twinkle l...|
+|how I wonder what...|
+|up above the worl...|
+|like a diamond in...|
+|twinkle twinkle l...|
++--------------------+
 
 </pre>
 </div>
@@ -13241,7 +13220,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Register dataframe as a table</strong></p>
+<h2 id="Filter">Filter<a class="anchor-link" href="#Filter">&#182;</a></h2><p>Note we are referring to 'value'</p>
 
 </div>
 </div>
@@ -13251,8 +13230,13 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">clickstreamDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;clickstream&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;created clickstream temp table&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># both f.value and f[&quot;value&quot;] will work</span>
+<span class="c1"># later version recommended</span>
+
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;twinkle&quot;</span><span class="p">))</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;twinkle&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">filtered</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="n">filtered</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13269,7 +13253,14 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>created clickstream temp table
+<pre>2
++--------------------+
+|               value|
++--------------------+
+|twinkle twinkle l...|
+|twinkle twinkle l...|
++--------------------+
+
 </pre>
 </div>
 </div>
@@ -13281,8 +13272,15 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-2:-Querying-using-SQL">STEP 2: Querying using SQL<a class="anchor-link" href="#STEP-2:-Querying-using-SQL">&#182;</a></h2><p><strong>==&gt; Select all logs</strong></p>
+<h2 id="Checkout-Spark-Shell-UI-(4040)">Checkout Spark Shell UI (4040)<a class="anchor-link" href="#Checkout-Spark-Shell-UI-(4040)">&#182;</a></h2><p>Also see the DAG visualizations</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Load-larger-dataset">Load larger dataset<a class="anchor-link" href="#Load-larger-dataset">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13291,11 +13289,9 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">logs</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream&quot;</span><span class="p">)</span>
-<span class="c1">#&#39;logs&#39; is a dataframe</span>
-
-<span class="c1"># display the logs, hint : show</span>
-<span class="n">logs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;/data/text/twinkle/100M.data&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13312,30 +13308,32 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------+----+-----------------+----+----------+-------------+------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|
-|blocked|campaign_12|   5|     facebook.com|ip_3|session_96|1420070400864|user_5|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|
-|blocked|campaign_18| 110|    wikipedia.org|ip_5|session_55|1420070402592|user_6|
-|clicked| campaign_6|  15|comedycentral.com|ip_9|session_49|1420070403456|user_4|
-|blocked| campaign_9| 139|          cnn.com|ip_8|session_13|1420070404320|user_7|
-|blocked| campaign_4| 171|   funnyordie.com|ip_1|session_92|1420070405184|user_9|
-|blocked|campaign_17|  20|       amazon.com|ip_4|session_13|1420070406048|user_1|
-|blocked|campaign_20|  78|        zynga.com|ip_5|session_36|1420070406912|user_3|
-|blocked|campaign_19| 147|      nytimes.com|ip_2|session_65|1420070407776|user_6|
-| viewed| campaign_5|  50|    wikipedia.org|ip_5|session_10|1420070408640|user_6|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|
-| viewed|campaign_19|   0|sf.craigslist.org|ip_9|session_19|1420070410368|user_7|
-| viewed| campaign_1|  24|        yahoo.com|ip_4|session_60|1420070411232|user_8|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|
-|blocked| campaign_2|   7|      youtube.com|ip_2|session_93|1420070412960|user_1|
-|blocked| campaign_9| 153|       google.com|ip_3|session_22|1420070413824|user_9|
-|blocked| campaign_8| 140|comedycentral.com|ip_8| session_4|1420070414688|user_2|
-|blocked|campaign_19|  23|       amazon.com|ip_5|session_85|1420070415552|user_7|
-| viewed|campaign_20| 133|       google.com|ip_9|session_69|1420070416416|user_7|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
+<pre>3130078
++--------------------+
+|               value|
++--------------------+
+|twinkle twinkle l...|
+|how I wonder what...|
+|up above the worl...|
+|like a diamond in...|
+|twinkle twinkle l...|
+|how I wonder what...|
+|up above the worl...|
+|like a diamond in...|
+|twinkle twinkle l...|
+|how I wonder what...|
+|up above the worl...|
+|like a diamond in...|
+|twinkle twinkle l...|
+|how I wonder what...|
+|up above the worl...|
+|like a diamond in...|
+|twinkle twinkle l...|
+|how I wonder what...|
+|up above the worl...|
+|like a diamond in...|
++--------------------+
+only showing top 20 rows
 
 </pre>
 </div>
@@ -13348,7 +13346,8 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Find records with only clicks</strong></p>
+<h2 id="Inspect-Job-Details">Inspect Job Details<a class="anchor-link" href="#Inspect-Job-Details">&#182;</a></h2><p>How many tasks were allocated to the latest job?  Can you figure out why?
+Hint : get number of partitions</p>
 
 </div>
 </div>
@@ -13358,9 +13357,7 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Find Records with only clicks</span>
-<span class="c1"># TODO: fix the  table name?</span>
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream where action = &#39;clicked&#39;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">getNumPartitions</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13373,22 +13370,15 @@ Spark UI running on port 4042
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[5]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------+----+-----------------+----+----------+-------------+------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|
-|clicked| campaign_6|  15|comedycentral.com|ip_9|session_49|1420070403456|user_4|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
 
-</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>2</pre>
 </div>
+
 </div>
 
 </div>
@@ -13398,19 +13388,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Count records from each domain, sort the output by most to least</strong></p>
-<p>Sample output:</p>
-
-<pre><code>+-----------------+-----+
-|           domain|total|
-+-----------------+-----+
-|      nytimes.com|    1|
-|     facebook.com|    1|
-|       google.com|    2|
-|       amazon.com|    2|
-|    wikipedia.org|    3|
-+-----------------+-----+</code></pre>
-
+<h2 id="Save-filtered-data">Save filtered data<a class="anchor-link" href="#Save-filtered-data">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13419,47 +13397,12 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Try this query here:</span>
-
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select domain, COUNT(*) as total from clickstream group by domain  order by total&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;/data/text/twinkle/100M.data&quot;</span><span class="p">)</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;twinkle&quot;</span><span class="p">))</span>
+<span class="n">filtered</span><span class="o">.</span><span class="n">write</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;out2&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------------+-----+
-|           domain|total|
-+-----------------+-----+
-|     facebook.com|    1|
-|        zynga.com|    1|
-|       sfgate.com|    1|
-|   funnyordie.com|    1|
-|        yahoo.com|    1|
-|          cnn.com|    1|
-|      nytimes.com|    1|
-|      youtube.com|    2|
-|       amazon.com|    2|
-|       google.com|    2|
-|sf.craigslist.org|    2|
-|comedycentral.com|    2|
-|    wikipedia.org|    3|
-+-----------------+-----+
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13467,202 +13410,11 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-3:-Joining-Datasets">STEP 3: Joining Datasets<a class="anchor-link" href="#STEP-3:-Joining-Datasets">&#182;</a></h2><p><strong>==&gt; Load <code>domains</code> dataset and register it to table <code>domains</code></strong></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">domainsDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">&quot;/data/click-stream/domain-info.json&quot;</span><span class="p">)</span>
-<span class="n">domainsDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">domainsDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;domains&quot;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------+-----------------+
-|   category|           domain|
-+-----------+-----------------+
-|   SHOPPING|       amazon.com|
-|       NEWS|        bbc.co.uk|
-|     SOCIAL|     facebook.com|
-|      PHOTO|       flickr.com|
-|       NEWS|      foxnews.com|
-|     SEARCH|       google.com|
-|       NEWS|          npr.org|
-|       NEWS|      nytimes.com|
-|CLASSIFIEDS|sf.craigslist.org|
-|       NEWS|       sfgate.com|
-|     SOCIAL|      twitter.com|
-|       NEWS|     usatoday.com|
-|  REFERENCE|    wikipedia.org|
-|     SEARCH|        yahoo.com|
-|      VIDEO|      youtube.com|
-+-----------+-----------------+
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Join <code>clickstreams</code> and <code>domains</code></strong><br>
-Hint : Join query syntax for joining two tables A, B on A.x and A.y is</p>
-
-<pre><code>spark.sql("select A.*, B.* from A  join B  ON (A.x = B.y)")</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Write sql query for joining clickstreams and domains</span>
-<span class="c1"># TODO : fill in the common attribute for  clickstream &amp; domain table</span>
-<span class="c1"># Hint : domain</span>
-
-<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">SELECT clickstream.*, domains.*  </span>
-<span class="s2">from clickstream join domains </span>
-<span class="s2">ON (clickstream.domain= domains.domain)</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------+----+-----------------+----+----------+-------------+------+-----------+-----------------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|   category|           domain|
-+-------+-----------+----+-----------------+----+----------+-------------+------+-----------+-----------------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|      VIDEO|      youtube.com|
-|blocked|campaign_12|   5|     facebook.com|ip_3|session_96|1420070400864|user_5|     SOCIAL|     facebook.com|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|CLASSIFIEDS|sf.craigslist.org|
-|blocked|campaign_18| 110|    wikipedia.org|ip_5|session_55|1420070402592|user_6|  REFERENCE|    wikipedia.org|
-|blocked|campaign_17|  20|       amazon.com|ip_4|session_13|1420070406048|user_1|   SHOPPING|       amazon.com|
-|blocked|campaign_19| 147|      nytimes.com|ip_2|session_65|1420070407776|user_6|       NEWS|      nytimes.com|
-| viewed| campaign_5|  50|    wikipedia.org|ip_5|session_10|1420070408640|user_6|  REFERENCE|    wikipedia.org|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|  REFERENCE|    wikipedia.org|
-| viewed|campaign_19|   0|sf.craigslist.org|ip_9|session_19|1420070410368|user_7|CLASSIFIEDS|sf.craigslist.org|
-| viewed| campaign_1|  24|        yahoo.com|ip_4|session_60|1420070411232|user_8|     SEARCH|        yahoo.com|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|       NEWS|       sfgate.com|
-|blocked| campaign_2|   7|      youtube.com|ip_2|session_93|1420070412960|user_1|      VIDEO|      youtube.com|
-|blocked| campaign_9| 153|       google.com|ip_3|session_22|1420070413824|user_9|     SEARCH|       google.com|
-|blocked|campaign_19|  23|       amazon.com|ip_5|session_85|1420070415552|user_7|   SHOPPING|       amazon.com|
-| viewed|campaign_20| 133|       google.com|ip_9|session_69|1420070416416|user_7|     SEARCH|       google.com|
-+-------+-----------+----+-----------------+----+----------+-------------+------+-----------+-----------------+
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Count traffic per domain category (news, social ..etc)</strong><br>
-Hint : query the joined datasets</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Count traffic per domained category</span>
-
-<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">SELECT  domains.category , count(*) as traffic </span>
-<span class="s2">from clickstream join domains </span>
-<span class="s2">ON (clickstream.domain= domains.domain)</span>
-<span class="s2">group by domains.category</span>
-<span class="s2">order by  traffic</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------+-------+
-|   category|traffic|
-+-----------+-------+
-|     SOCIAL|      1|
-|   SHOPPING|      2|
-|       NEWS|      2|
-|CLASSIFIEDS|      2|
-|      VIDEO|      2|
-|  REFERENCE|      3|
-|     SEARCH|      3|
-+-----------+-------+
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-4:-Explore-UI">STEP 4: Explore UI<a class="anchor-link" href="#STEP-4:-Explore-UI">&#182;</a></h2><p>(Your DAG visualization may be slightly different from what we show here)</p>
-<p><img src="../assets/images/5.2c.png" style="border: 5px solid grey; max-width:100%;"/></p>
-<p><img src="../assets/images/5.2d.png" style="border: 5px solid grey; max-width:100%;"/></p>
-<p><img src="../assets/images/5.2e.png" style="border: 5px solid grey; max-width:100%;"/></p>
+<p>As the program is running checkout spark console (where you started Jupyter from).
+You will see output like this</p>
+<p>[Stage 16:==========================&gt;                             (15 + 4) / 32]</p>
+<p>Also inspect 'out2' directory.
+What do you see?</p>
 
 </div>
 </div>
@@ -13670,134 +13422,11 @@ Hint : query the joined datasets</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Step-5-:-Understand-Query-Execution">Step 5 : Understand Query Execution<a class="anchor-link" href="#Step-5-:-Understand-Query-Execution">&#182;</a></h2><p>We will use <strong>explain</strong></p>
+<h2 id="Bonus-Lab-:-Merging-multiple-partitions-into-ONE">Bonus Lab : Merging multiple partitions into ONE<a class="anchor-link" href="#Bonus-Lab-:-Merging-multiple-partitions-into-ONE">&#182;</a></h2><p>When we saved data in the above section, there are multiple files created in output directory. Can you just create one output file?</p>
+<p>Hint : see the API for <code>coalesce</code> or <code>repartition</code></p>
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream where cost &gt; 100&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">extended</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>== Parsed Logical Plan ==
-&#39;Project [*]
-+- &#39;Filter (&#39;cost &gt; 100)
-   +- &#39;UnresolvedRelation `clickstream`
-
-== Analyzed Logical Plan ==
-action: string, campaign: string, cost: bigint, domain: string, ip: string, session: string, timestamp: bigint, user: string
-Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13]
-+- Filter (cost#8L &gt; cast(100 as bigint))
-   +- SubqueryAlias `clickstream`
-      +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-
-== Optimized Logical Plan ==
-Filter (isnotnull(cost#8L) &amp;&amp; (cost#8L &gt; 100))
-+- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-
-== Physical Plan ==
-*(1) Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13]
-+- *(1) Filter (isnotnull(cost#8L) &amp;&amp; (cost#8L &gt; 100))
-   +- *(1) FileScan json [action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/clickstream.json], PartitionFilters: [], PushedFilters: [IsNotNull(cost), GreaterThan(cost,100)], ReadSchema: struct&lt;action:string,campaign:string,cost:bigint,domain:string,ip:string,session:string,timestamp...
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT clickstream.*, domains.*  from clickstream join domains ON (clickstream.domain= domains.domain)&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">extended</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>== Parsed Logical Plan ==
-&#39;Project [ArrayBuffer(clickstream).*, ArrayBuffer(domains).*]
-+- &#39;Join Inner, (&#39;clickstream.domain = &#39;domains.domain)
-   :- &#39;UnresolvedRelation `clickstream`
-   +- &#39;UnresolvedRelation `domains`
-
-== Analyzed Logical Plan ==
-action: string, campaign: string, cost: bigint, domain: string, ip: string, session: string, timestamp: bigint, user: string, category: string, domain: string
-Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13, category#158, domain#159]
-+- Join Inner, (domain#9 = domain#159)
-   :- SubqueryAlias `clickstream`
-   :  +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-   +- SubqueryAlias `domains`
-      +- Relation[category#158,domain#159] json
-
-== Optimized Logical Plan ==
-Join Inner, (domain#9 = domain#159)
-:- Filter isnotnull(domain#9)
-:  +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-+- Filter isnotnull(domain#159)
-   +- Relation[category#158,domain#159] json
-
-== Physical Plan ==
-*(2) BroadcastHashJoin [domain#9], [domain#159], Inner, BuildRight
-:- *(2) Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13]
-:  +- *(2) Filter isnotnull(domain#9)
-:     +- *(2) FileScan json [action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/clickstream.json], PartitionFilters: [], PushedFilters: [IsNotNull(domain)], ReadSchema: struct&lt;action:string,campaign:string,cost:bigint,domain:string,ip:string,session:string,timestamp...
-+- BroadcastExchange HashedRelationBroadcastMode(List(input[1, string, true]))
-   +- *(1) Project [category#158, domain#159]
-      +- *(1) Filter isnotnull(domain#159)
-         +- *(1) FileScan json [category#158,domain#159] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/domain-info.json], PartitionFilters: [], PushedFilters: [IsNotNull(domain)], ReadSchema: struct&lt;category:string,domain:string&gt;
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
     </div>
   </div>

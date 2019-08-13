@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>4.2-sql-python-soultions</title>
+<title>4.4-caching-2-sql-python</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13116,12 +13116,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<link rel='stylesheet' href='../assets/css/main.css'/>
-
-<p><a href="../README.md">&lt;&lt; back to main index</a></p>
-<h1 id="Lab-4.2-:-Spark-SQL">Lab 4.2 : Spark SQL<a class="anchor-link" href="#Lab-4.2-:-Spark-SQL">&#182;</a></h1><h3 id="Overview">Overview<a class="anchor-link" href="#Overview">&#182;</a></h3><p>Using SQL statements with Spark SQL.</p>
-<h3 id="Depends-On">Depends On<a class="anchor-link" href="#Depends-On">&#182;</a></h3><p>None</p>
-<h3 id="Run-time">Run time<a class="anchor-link" href="#Run-time">&#182;</a></h3><p>20-30 mins</p>
+<h1 id="Caching-in-SQL----Part-2">Caching in SQL -- Part 2<a class="anchor-link" href="#Caching-in-SQL----Part-2">&#182;</a></h1><p>Understand Spark SQL caching</p>
 
 </div>
 </div>
@@ -13162,9 +13157,9 @@ Spark config:
 	 spark.app.name=TestApp
 	spark.master=local[*]
 	executor.memory=2g
-	spark.sql.warehouse.dir=/tmp/tmpdlzv3je4
+	spark.sql.warehouse.dir=/tmp/tmpdcgl02or
 	some_property=some_value
-Spark UI running on port 4042
+Spark UI running on port 4044
 </pre>
 </div>
 </div>
@@ -13176,7 +13171,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-1:-Load-Clickstream-data">STEP 1: Load Clickstream data<a class="anchor-link" href="#STEP-1:-Load-Clickstream-data">&#182;</a></h2>
+<h2 id="Step-1-:-Read-JSON-data">Step 1 : Read JSON data<a class="anchor-link" href="#Step-1-:-Read-JSON-data">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13185,9 +13180,16 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">clickstreamDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">&quot;/data/click-stream/clickstream.json&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">clickstreamDF</span><span class="p">)</span>
-<span class="n">clickstreamDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">clickstreamDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">&quot;/data/click-stream/json&quot;</span><span class="p">)</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Read JSON in </span><span class="si">{:,.2f}</span><span class="s2"> ms &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span><span class="p">))</span>
+
+<span class="n">clickstreamDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;clickstream&quot;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;registered temp table clickstream&quot;</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">listTables</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13204,55 +13206,36 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>DataFrame[action: string, campaign: string, cost: bigint, domain: string, ip: string, session: string, timestamp: bigint, user: string]
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|
-|blocked|campaign_12|   5|     facebook.com|ip_3|session_96|1420070400864|user_5|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|
-|blocked|campaign_18| 110|    wikipedia.org|ip_5|session_55|1420070402592|user_6|
-|clicked| campaign_6|  15|comedycentral.com|ip_9|session_49|1420070403456|user_4|
-|blocked| campaign_9| 139|          cnn.com|ip_8|session_13|1420070404320|user_7|
-|blocked| campaign_4| 171|   funnyordie.com|ip_1|session_92|1420070405184|user_9|
-|blocked|campaign_17|  20|       amazon.com|ip_4|session_13|1420070406048|user_1|
-|blocked|campaign_20|  78|        zynga.com|ip_5|session_36|1420070406912|user_3|
-|blocked|campaign_19| 147|      nytimes.com|ip_2|session_65|1420070407776|user_6|
-| viewed| campaign_5|  50|    wikipedia.org|ip_5|session_10|1420070408640|user_6|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|
-| viewed|campaign_19|   0|sf.craigslist.org|ip_9|session_19|1420070410368|user_7|
-| viewed| campaign_1|  24|        yahoo.com|ip_4|session_60|1420070411232|user_8|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|
-|blocked| campaign_2|   7|      youtube.com|ip_2|session_93|1420070412960|user_1|
-|blocked| campaign_9| 153|       google.com|ip_3|session_22|1420070413824|user_9|
-|blocked| campaign_8| 140|comedycentral.com|ip_8| session_4|1420070414688|user_2|
-|blocked|campaign_19|  23|       amazon.com|ip_5|session_85|1420070415552|user_7|
-| viewed|campaign_20| 133|       google.com|ip_9|session_69|1420070416416|user_7|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-
+<pre>Read JSON in 13,921.91 ms 
+registered temp table clickstream
 </pre>
 </div>
 </div>
 
-</div>
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[Table(name=&#39;clickstream&#39;, database=None, description=None, tableType=&#39;TEMPORARY&#39;, isTemporary=True)]</pre>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Register dataframe as a table</strong></p>
 
 </div>
 </div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">clickstreamDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;clickstream&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;created clickstream temp table&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## see table data</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream limit 10&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13269,7 +13252,21 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>created clickstream temp table
+<pre>+-------+-----------+----+-----------------+------+----------+-------------+----------+
+| action|   campaign|cost|           domain|    ip|   session|    timestamp|      user|
++-------+-----------+----+-----------------+------+----------+-------------+----------+
+|blocked|campaign_12| 108|   funnyordie.com|ip_301|session_95|1420329600000|user_83559|
+| viewed| campaign_5|  74|         hulu.com|ip_791|session_62|1420329600043|user_89610|
+|blocked| campaign_4| 127|sf.craigslist.org|ip_998|session_90|1420329600086|user_82694|
+|clicked|campaign_14|  57|        bbc.co.uk|ip_514|session_84|1420329600129|user_43516|
+|blocked|campaign_18|   2|   funnyordie.com|ip_799|session_46|1420329600172|user_85431|
+| viewed|campaign_12|   7|sf.craigslist.org|ip_101|session_89|1420329600215|user_48910|
+| viewed|campaign_12|  79|          npr.org|ip_535|session_49|1420329600258|user_43425|
+| viewed| campaign_6|  14|        yahoo.com| ip_26|session_45|1420329600301|user_52671|
+|blocked|campaign_19| 143|comedycentral.com|ip_355|session_41|1420329600344|user_32334|
+|blocked| campaign_6|  35|     facebook.com|ip_970|session_26|1420329600387|user_14329|
++-------+-----------+----+-----------------+------+----------+-------------+----------+
+
 </pre>
 </div>
 </div>
@@ -13281,8 +13278,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-2:-Querying-using-SQL">STEP 2: Querying using SQL<a class="anchor-link" href="#STEP-2:-Querying-using-SQL">&#182;</a></h2><p><strong>==&gt; Select all logs</strong></p>
-
+<h2 id="Step-2-:-Query-without-caching">Step 2 : Query without caching<a class="anchor-link" href="#Step-2-:-Query-without-caching">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13291,11 +13287,21 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">logs</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream&quot;</span><span class="p">)</span>
-<span class="c1">#&#39;logs&#39; is a dataframe</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
-<span class="c1"># display the logs, hint : show</span>
-<span class="n">logs</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">clearCache</span><span class="p">()</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">sql</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select domain, count(*) as total from clickstream</span>
+<span class="s2">group by domain </span>
+<span class="s2">order by total desc</span>
+<span class="s2">limit 10</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">top10_domains</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+<span class="n">top10_domains</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;query took </span><span class="si">{:,.2f}</span><span class="s2"> ms &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13312,31 +13318,22 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------+----+-----------------+----+----------+-------------+------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|
-|blocked|campaign_12|   5|     facebook.com|ip_3|session_96|1420070400864|user_5|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|
-|blocked|campaign_18| 110|    wikipedia.org|ip_5|session_55|1420070402592|user_6|
-|clicked| campaign_6|  15|comedycentral.com|ip_9|session_49|1420070403456|user_4|
-|blocked| campaign_9| 139|          cnn.com|ip_8|session_13|1420070404320|user_7|
-|blocked| campaign_4| 171|   funnyordie.com|ip_1|session_92|1420070405184|user_9|
-|blocked|campaign_17|  20|       amazon.com|ip_4|session_13|1420070406048|user_1|
-|blocked|campaign_20|  78|        zynga.com|ip_5|session_36|1420070406912|user_3|
-|blocked|campaign_19| 147|      nytimes.com|ip_2|session_65|1420070407776|user_6|
-| viewed| campaign_5|  50|    wikipedia.org|ip_5|session_10|1420070408640|user_6|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|
-| viewed|campaign_19|   0|sf.craigslist.org|ip_9|session_19|1420070410368|user_7|
-| viewed| campaign_1|  24|        yahoo.com|ip_4|session_60|1420070411232|user_8|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|
-|blocked| campaign_2|   7|      youtube.com|ip_2|session_93|1420070412960|user_1|
-|blocked| campaign_9| 153|       google.com|ip_3|session_22|1420070413824|user_9|
-|blocked| campaign_8| 140|comedycentral.com|ip_8| session_4|1420070414688|user_2|
-|blocked|campaign_19|  23|       amazon.com|ip_5|session_85|1420070415552|user_7|
-| viewed|campaign_20| 133|       google.com|ip_9|session_69|1420070416416|user_7|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
+<pre>+-----------------+------+
+|           domain| total|
++-----------------+------+
+|      youtube.com|402597|
+|      nytimes.com|402569|
+|          npr.org|402521|
+|sf.craigslist.org|402374|
+|        zynga.com|402372|
+|       sfgate.com|402333|
+|     facebook.com|402101|
+|       google.com|402044|
+|comedycentral.com|402003|
+|       flickr.com|401926|
++-----------------+------+
 
+query took 8,812.81 ms 
 </pre>
 </div>
 </div>
@@ -13348,8 +13345,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Find records with only clicks</strong></p>
-
+<h2 id="Step-3-:-Explain-Query">Step 3 : Explain Query<a class="anchor-link" href="#Step-3-:-Explain-Query">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13358,9 +13354,9 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Find Records with only clicks</span>
-<span class="c1"># TODO: fix the  table name?</span>
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream where action = &#39;clicked&#39;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#top10_domains.explain()</span>
+
+<span class="n">top10_domains</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">extended</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13377,16 +13373,36 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------+----+-----------------+----+----------+-------------+------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|
-|clicked| campaign_6|  15|comedycentral.com|ip_9|session_49|1420070403456|user_4|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|
-+-------+-----------+----+-----------------+----+----------+-------------+------+
+<pre>== Parsed Logical Plan ==
+&#39;GlobalLimit 10
++- &#39;LocalLimit 10
+   +- &#39;Sort [&#39;total DESC NULLS LAST], true
+      +- &#39;Aggregate [&#39;domain], [&#39;domain, &#39;count(1) AS total#74]
+         +- &#39;UnresolvedRelation `clickstream`
 
+== Analyzed Logical Plan ==
+domain: string, total: bigint
+GlobalLimit 10
++- LocalLimit 10
+   +- Sort [total#74L DESC NULLS LAST], true
+      +- Aggregate [domain#9], [domain#9, count(1) AS total#74L]
+         +- SubqueryAlias `clickstream`
+            +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
+
+== Optimized Logical Plan ==
+GlobalLimit 10
++- LocalLimit 10
+   +- Sort [total#74L DESC NULLS LAST], true
+      +- Aggregate [domain#9], [domain#9, count(1) AS total#74L]
+         +- Project [domain#9]
+            +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
+
+== Physical Plan ==
+TakeOrderedAndProject(limit=10, orderBy=[total#74L DESC NULLS LAST], output=[domain#9,total#74L])
++- *(2) HashAggregate(keys=[domain#9], functions=[count(1)], output=[domain#9, total#74L])
+   +- Exchange hashpartitioning(domain#9, 200)
+      +- *(1) HashAggregate(keys=[domain#9], functions=[partial_count(1)], output=[domain#9, count#86L])
+         +- *(1) FileScan json [domain#9] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/json], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;domain:string&gt;
 </pre>
 </div>
 </div>
@@ -13398,18 +13414,13 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Count records from each domain, sort the output by most to least</strong></p>
-<p>Sample output:</p>
-
-<pre><code>+-----------------+-----+
-|           domain|total|
-+-----------------+-----+
-|      nytimes.com|    1|
-|     facebook.com|    1|
-|       google.com|    2|
-|       amazon.com|    2|
-|    wikipedia.org|    3|
-+-----------------+-----+</code></pre>
+<h2 id="Step-3-:-Cache">Step 3 : Cache<a class="anchor-link" href="#Step-3-:-Cache">&#182;</a></h2><p>There are 3 ways to cache</p>
+<ol>
+<li>dataframe.cache()  : non blocking</li>
+<li>spark.sql("cache table TABLE_NAME") : blocking</li>
+<li>spark.catalog.cacheTable('tableName') : non blocking</li>
+</ol>
+<p>Try all these options and see the performance implications.</p>
 
 </div>
 </div>
@@ -13419,9 +13430,25 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Try this query here:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select domain, COUNT(*) as total from clickstream group by domain  order by total&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># uncache</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">clearCache</span><span class="p">()</span> <span class="c1">## clear all tables</span>
+<span class="c1"># spark.catalog.uncacheTable(&quot;clickstream&quot;)  # clear just one table</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;is &#39;clickstream&#39; cached : &quot;</span> <span class="p">,</span> <span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">isCached</span><span class="p">(</span><span class="s1">&#39;clickstream&#39;</span><span class="p">))</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="c1">## we have different ways to cache,</span>
+<span class="c1">## uncomment one of the following</span>
+<span class="c1">#spark.sql(&quot;cache table clickstream&quot;);  ## 1</span>
+<span class="c1">#clickstreamDF.cache()  ## 2</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">cacheTable</span><span class="p">(</span><span class="s2">&quot;clickstream&quot;</span><span class="p">)</span> <span class="c1">## 3</span>
+
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;caching took </span><span class="si">{:,.2f}</span><span class="s2"> ms &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span><span class="p">))</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;is &#39;clickstream&#39; cached : &quot;</span> <span class="p">,</span> <span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">isCached</span><span class="p">(</span><span class="s1">&#39;clickstream&#39;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13438,24 +13465,9 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------------+-----+
-|           domain|total|
-+-----------------+-----+
-|     facebook.com|    1|
-|        zynga.com|    1|
-|       sfgate.com|    1|
-|   funnyordie.com|    1|
-|        yahoo.com|    1|
-|          cnn.com|    1|
-|      nytimes.com|    1|
-|      youtube.com|    2|
-|       amazon.com|    2|
-|       google.com|    2|
-|sf.craigslist.org|    2|
-|comedycentral.com|    2|
-|    wikipedia.org|    3|
-+-----------------+-----+
-
+<pre>is &#39;clickstream&#39; cached :  False
+caching took 20.28 ms 
+is &#39;clickstream&#39; cached :  True
 </pre>
 </div>
 </div>
@@ -13467,7 +13479,7 @@ Spark UI running on port 4042
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-3:-Joining-Datasets">STEP 3: Joining Datasets<a class="anchor-link" href="#STEP-3:-Joining-Datasets">&#182;</a></h2><p><strong>==&gt; Load <code>domains</code> dataset and register it to table <code>domains</code></strong></p>
+<h2 id="Step-:-Query-after-caching">Step : Query after caching<a class="anchor-link" href="#Step-:-Query-after-caching">&#182;</a></h2><p>Run the following cell to measure query time after caching.</p>
 
 </div>
 </div>
@@ -13477,9 +13489,22 @@ Spark UI running on port 4042
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">domainsDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">&quot;/data/click-stream/domain-info.json&quot;</span><span class="p">)</span>
-<span class="n">domainsDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">domainsDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;domains&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Query1 after caching</span>
+<span class="c1">## Note the time taken</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">sql</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select domain, count(*) as total from clickstream</span>
+<span class="s2">group by domain </span>
+<span class="s2">order by total desc</span>
+<span class="s2">limit 10</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">top10_domains</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+<span class="n">top10_domains</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;query took </span><span class="si">{:,.2f}</span><span class="s2"> ms &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13496,26 +13521,22 @@ Spark UI running on port 4042
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------+-----------------+
-|   category|           domain|
-+-----------+-----------------+
-|   SHOPPING|       amazon.com|
-|       NEWS|        bbc.co.uk|
-|     SOCIAL|     facebook.com|
-|      PHOTO|       flickr.com|
-|       NEWS|      foxnews.com|
-|     SEARCH|       google.com|
-|       NEWS|          npr.org|
-|       NEWS|      nytimes.com|
-|CLASSIFIEDS|sf.craigslist.org|
-|       NEWS|       sfgate.com|
-|     SOCIAL|      twitter.com|
-|       NEWS|     usatoday.com|
-|  REFERENCE|    wikipedia.org|
-|     SEARCH|        yahoo.com|
-|      VIDEO|      youtube.com|
-+-----------+-----------------+
+<pre>+-----------------+------+
+|           domain| total|
++-----------------+------+
+|      youtube.com|402597|
+|      nytimes.com|402569|
+|          npr.org|402521|
+|sf.craigslist.org|402374|
+|        zynga.com|402372|
+|       sfgate.com|402333|
+|     facebook.com|402101|
+|       google.com|402044|
+|comedycentral.com|402003|
+|       flickr.com|401926|
++-----------------+------+
 
+query took 29,379.45 ms 
 </pre>
 </div>
 </div>
@@ -13523,34 +13544,26 @@ Spark UI running on port 4042
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Join <code>clickstreams</code> and <code>domains</code></strong><br>
-Hint : Join query syntax for joining two tables A, B on A.x and A.y is</p>
-
-<pre><code>spark.sql("select A.*, B.* from A  join B  ON (A.x = B.y)")</code></pre>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Write sql query for joining clickstreams and domains</span>
-<span class="c1"># TODO : fill in the common attribute for  clickstream &amp; domain table</span>
-<span class="c1"># Hint : domain</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Note the time for second query</span>
+<span class="kn">import</span> <span class="nn">time</span>
 
-<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">SELECT clickstream.*, domains.*  </span>
-<span class="s2">from clickstream join domains </span>
-<span class="s2">ON (clickstream.domain= domains.domain)</span>
+<span class="n">t1</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="n">sql</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select domain, count(*) as total from clickstream</span>
+<span class="s2">group by domain </span>
+<span class="s2">order by total desc</span>
+<span class="s2">limit 10</span>
 <span class="s2">&quot;&quot;&quot;</span>
-
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">top10_domains</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+<span class="n">top10_domains</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;query took </span><span class="si">{:,.2f}</span><span class="s2"> ms &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span> <span class="p">(</span><span class="n">t2</span><span class="o">-</span><span class="n">t1</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13567,26 +13580,22 @@ Hint : Join query syntax for joining two tables A, B on A.x and A.y is</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-------+-----------+----+-----------------+----+----------+-------------+------+-----------+-----------------+
-| action|   campaign|cost|           domain|  ip|   session|    timestamp|  user|   category|           domain|
-+-------+-----------+----+-----------------+----+----------+-------------+------+-----------+-----------------+
-|clicked|campaign_19| 118|      youtube.com|ip_4|session_36|1420070400000|user_9|      VIDEO|      youtube.com|
-|blocked|campaign_12|   5|     facebook.com|ip_3|session_96|1420070400864|user_5|     SOCIAL|     facebook.com|
-|clicked| campaign_3|  54|sf.craigslist.org|ip_9|session_61|1420070401728|user_8|CLASSIFIEDS|sf.craigslist.org|
-|blocked|campaign_18| 110|    wikipedia.org|ip_5|session_55|1420070402592|user_6|  REFERENCE|    wikipedia.org|
-|blocked|campaign_17|  20|       amazon.com|ip_4|session_13|1420070406048|user_1|   SHOPPING|       amazon.com|
-|blocked|campaign_19| 147|      nytimes.com|ip_2|session_65|1420070407776|user_6|       NEWS|      nytimes.com|
-| viewed| campaign_5|  50|    wikipedia.org|ip_5|session_10|1420070408640|user_6|  REFERENCE|    wikipedia.org|
-|clicked|campaign_16| 141|    wikipedia.org|ip_1|session_57|1420070409504|user_1|  REFERENCE|    wikipedia.org|
-| viewed|campaign_19|   0|sf.craigslist.org|ip_9|session_19|1420070410368|user_7|CLASSIFIEDS|sf.craigslist.org|
-| viewed| campaign_1|  24|        yahoo.com|ip_4|session_60|1420070411232|user_8|     SEARCH|        yahoo.com|
-|clicked| campaign_5|  74|       sfgate.com|ip_6|session_27|1420070412096|user_3|       NEWS|       sfgate.com|
-|blocked| campaign_2|   7|      youtube.com|ip_2|session_93|1420070412960|user_1|      VIDEO|      youtube.com|
-|blocked| campaign_9| 153|       google.com|ip_3|session_22|1420070413824|user_9|     SEARCH|       google.com|
-|blocked|campaign_19|  23|       amazon.com|ip_5|session_85|1420070415552|user_7|   SHOPPING|       amazon.com|
-| viewed|campaign_20| 133|       google.com|ip_9|session_69|1420070416416|user_7|     SEARCH|       google.com|
-+-------+-----------+----+-----------------+----+----------+-------------+------+-----------+-----------------+
+<pre>+-----------------+------+
+|           domain| total|
++-----------------+------+
+|      youtube.com|402597|
+|      nytimes.com|402569|
+|          npr.org|402521|
+|sf.craigslist.org|402374|
+|        zynga.com|402372|
+|       sfgate.com|402333|
+|     facebook.com|402101|
+|       google.com|402044|
+|comedycentral.com|402003|
+|       flickr.com|401926|
++-----------------+------+
 
+query took 1,524.31 ms 
 </pre>
 </div>
 </div>
@@ -13598,8 +13607,7 @@ Hint : Join query syntax for joining two tables A, B on A.x and A.y is</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>==&gt; Count traffic per domain category (news, social ..etc)</strong><br>
-Hint : query the joined datasets</p>
+<h2 id="Step-:-Explain-Query">Step : Explain Query<a class="anchor-link" href="#Step-:-Explain-Query">&#182;</a></h2><p>You will see caching in effect!</p>
 
 </div>
 </div>
@@ -13609,17 +13617,7 @@ Hint : query the joined datasets</p>
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TODO: Count traffic per domained category</span>
-
-<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">SELECT  domains.category , count(*) as traffic </span>
-<span class="s2">from clickstream join domains </span>
-<span class="s2">ON (clickstream.domain= domains.domain)</span>
-<span class="s2">group by domains.category</span>
-<span class="s2">order by  traffic</span>
-<span class="s2">&quot;&quot;&quot;</span>
-
-<span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">top10_domains</span><span class="o">.</span><span class="n">explain</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13636,18 +13634,14 @@ Hint : query the joined datasets</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------+-------+
-|   category|traffic|
-+-----------+-------+
-|     SOCIAL|      1|
-|   SHOPPING|      2|
-|       NEWS|      2|
-|CLASSIFIEDS|      2|
-|      VIDEO|      2|
-|  REFERENCE|      3|
-|     SEARCH|      3|
-+-----------+-------+
-
+<pre>== Physical Plan ==
+TakeOrderedAndProject(limit=10, orderBy=[total#215L DESC NULLS LAST], output=[domain#9,total#215L])
++- *(2) HashAggregate(keys=[domain#9], functions=[count(1)])
+   +- Exchange hashpartitioning(domain#9, 200)
+      +- *(1) HashAggregate(keys=[domain#9], functions=[partial_count(1)])
+         +- InMemoryTableScan [domain#9]
+               +- InMemoryRelation [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13], StorageLevel(disk, memory, deserialized, 1 replicas)
+                     +- *(1) FileScan json [action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/json], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;action:string,campaign:string,cost:bigint,domain:string,ip:string,session:string,timestamp...
 </pre>
 </div>
 </div>
@@ -13659,129 +13653,31 @@ Hint : query the joined datasets</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="STEP-4:-Explore-UI">STEP 4: Explore UI<a class="anchor-link" href="#STEP-4:-Explore-UI">&#182;</a></h2><p>(Your DAG visualization may be slightly different from what we show here)</p>
-<p><img src="../assets/images/5.2c.png" style="border: 5px solid grey; max-width:100%;"/></p>
-<p><img src="../assets/images/5.2d.png" style="border: 5px solid grey; max-width:100%;"/></p>
-<p><img src="../assets/images/5.2e.png" style="border: 5px solid grey; max-width:100%;"/></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Step-5-:-Understand-Query-Execution">Step 5 : Understand Query Execution<a class="anchor-link" href="#Step-5-:-Understand-Query-Execution">&#182;</a></h2><p>We will use <strong>explain</strong></p>
+<h2 id="Clear-Cache">Clear Cache<a class="anchor-link" href="#Clear-Cache">&#182;</a></h2><p>Try the following ways to clear cache</p>
+<ol>
+<li>spark.sql ("CLEAR CACHE")  - removes all cache</li>
+<li>spark.sql ("CLEAR CACHE tableName"); - removes one table</li>
+<li>spark.catalog.uncacheTable('tableName') - removes one cached table</li>
+<li>spark.catalog.clearCache() - clear all caches</li>
+<li>dataframe.unpersist()</li>
+</ol>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from clickstream where cost &gt; 100&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">extended</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#spark.sql(&quot;CLEAR CACHE&quot;)</span>
+<span class="c1">#spark.sql(&quot;CLEAR CACHE clickstream&quot;);</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">uncacheTable</span><span class="p">(</span><span class="s1">&#39;clickstream&#39;</span><span class="p">)</span>
+<span class="c1">#spark.catalog.clearCache() </span>
+<span class="c1">#top10_domains.unpersist()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>== Parsed Logical Plan ==
-&#39;Project [*]
-+- &#39;Filter (&#39;cost &gt; 100)
-   +- &#39;UnresolvedRelation `clickstream`
-
-== Analyzed Logical Plan ==
-action: string, campaign: string, cost: bigint, domain: string, ip: string, session: string, timestamp: bigint, user: string
-Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13]
-+- Filter (cost#8L &gt; cast(100 as bigint))
-   +- SubqueryAlias `clickstream`
-      +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-
-== Optimized Logical Plan ==
-Filter (isnotnull(cost#8L) &amp;&amp; (cost#8L &gt; 100))
-+- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-
-== Physical Plan ==
-*(1) Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13]
-+- *(1) Filter (isnotnull(cost#8L) &amp;&amp; (cost#8L &gt; 100))
-   +- *(1) FileScan json [action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/clickstream.json], PartitionFilters: [], PushedFilters: [IsNotNull(cost), GreaterThan(cost,100)], ReadSchema: struct&lt;action:string,campaign:string,cost:bigint,domain:string,ip:string,session:string,timestamp...
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;SELECT clickstream.*, domains.*  from clickstream join domains ON (clickstream.domain= domains.domain)&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">explain</span><span class="p">(</span><span class="n">extended</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>== Parsed Logical Plan ==
-&#39;Project [ArrayBuffer(clickstream).*, ArrayBuffer(domains).*]
-+- &#39;Join Inner, (&#39;clickstream.domain = &#39;domains.domain)
-   :- &#39;UnresolvedRelation `clickstream`
-   +- &#39;UnresolvedRelation `domains`
-
-== Analyzed Logical Plan ==
-action: string, campaign: string, cost: bigint, domain: string, ip: string, session: string, timestamp: bigint, user: string, category: string, domain: string
-Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13, category#158, domain#159]
-+- Join Inner, (domain#9 = domain#159)
-   :- SubqueryAlias `clickstream`
-   :  +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-   +- SubqueryAlias `domains`
-      +- Relation[category#158,domain#159] json
-
-== Optimized Logical Plan ==
-Join Inner, (domain#9 = domain#159)
-:- Filter isnotnull(domain#9)
-:  +- Relation[action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] json
-+- Filter isnotnull(domain#159)
-   +- Relation[category#158,domain#159] json
-
-== Physical Plan ==
-*(2) BroadcastHashJoin [domain#9], [domain#159], Inner, BuildRight
-:- *(2) Project [action#6, campaign#7, cost#8L, domain#9, ip#10, session#11, timestamp#12L, user#13]
-:  +- *(2) Filter isnotnull(domain#9)
-:     +- *(2) FileScan json [action#6,campaign#7,cost#8L,domain#9,ip#10,session#11,timestamp#12L,user#13] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/clickstream.json], PartitionFilters: [], PushedFilters: [IsNotNull(domain)], ReadSchema: struct&lt;action:string,campaign:string,cost:bigint,domain:string,ip:string,session:string,timestamp...
-+- BroadcastExchange HashedRelationBroadcastMode(List(input[1, string, true]))
-   +- *(1) Project [category#158, domain#159]
-      +- *(1) Filter isnotnull(domain#159)
-         +- *(1) FileScan json [category#158,domain#159] Batched: false, Format: JSON, Location: InMemoryFileIndex[file:/data/click-stream/domain-info.json], PartitionFilters: [], PushedFilters: [IsNotNull(domain)], ReadSchema: struct&lt;category:string,domain:string&gt;
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
