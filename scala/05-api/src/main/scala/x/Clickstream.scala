@@ -30,21 +30,21 @@ object Clickstream {
 
     // ## TODO-1 : create an input df;
     // hint : spark.read.json(input)
-    /*
-    val clickstream = ???
+    
+    val clickstream = spark.read.json(input)
 
     // TODO-2  : count how many records we have
-    val count =  ???
+    val count =  clickstream.count
     println("### total clickstream records " + count)
-    */
+   
 
     // TODO-3 : count traffic per domain
-    /*
-    val domainCount = clickstream.groupBy("???").count()
+    
+    val domainCount = clickstream.groupBy("domain").count()
 
     // display domainCount (hint : show)
-    domainCount.???
-    */
+    domainCount.show
+   
 
   }
 }

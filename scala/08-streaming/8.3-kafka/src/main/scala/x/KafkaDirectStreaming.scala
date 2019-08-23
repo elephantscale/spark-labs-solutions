@@ -55,11 +55,9 @@ object KafkaDirectStreaming {
     val lines = stream.map(record => record.value.toString)
     lines.print
 
-    /*
     // TODO-1 : extract lines that has 'x'
-    val x = lines.filter(_.contains("???"))
+    val x = lines.filter(_.contains("x"))
     x.print
-    */
 
     ssc.start()
     ssc.awaitTermination()

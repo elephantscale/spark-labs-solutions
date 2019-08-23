@@ -45,8 +45,7 @@ object ProcessFiles {
     }
 
     // HACK : so the 4040 UI stays alive :-)
-    //      println("### Hit enter to terminate the program...:")
-    //      val line = Console.readLine
+    val line = Console.readLine
     spark.stop() // close the session
   }
 }

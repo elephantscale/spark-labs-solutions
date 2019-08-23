@@ -16,7 +16,7 @@ object StructuredStreaming {
 
     val clickstream = spark.readStream.format("socket").
                       option("host", "localhost").
-                      option("port", 1000)
+                      option("port", 10000)
                       .load()
 
     clickstream.printSchema

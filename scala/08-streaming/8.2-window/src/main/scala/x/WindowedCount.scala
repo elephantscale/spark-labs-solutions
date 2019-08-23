@@ -12,7 +12,7 @@ object WindowedCount {
     val sparkConf = new SparkConf().setAppName("WindowedCount")
     val ssc = new StreamingContext(sparkConf, Seconds(5))
 
-    val lines = ssc.socketTextStream("localhost", 9999, StorageLevel.MEMORY_ONLY)
+    val lines = ssc.socketTextStream("localhost", 10000, StorageLevel.MEMORY_ONLY)
     val actionsKVPairs = lines.map{
       line => {
         val tokens = line.split(",")
@@ -26,13 +26,15 @@ object WindowedCount {
     }
     actionsKVPairs.print()
 
-    // TODO-1: Try changing both the values for window intervals
+    /// TODO-1: Try 10 seconds for both both the values for window intervals
     // reduceByKeyAndWindow (reduce func,  window duration, sliding window)
+    // window duration (last 10 seconds)
+    // sliding window (10 seconds)
     val windowedActionCounts = actionsKVPairs.reduceByKeyAndWindow((a:Int, b:Int) => (a+b),
         Seconds(10), Seconds(10))
 
     windowedActionCounts.print()
-    //windowedActionCounts.saveAsTextFiles("out/actions")
+    windowedActionCounts.saveAsTextFiles("out/actions")
 
     ssc.start()
     ssc.awaitTermination()
