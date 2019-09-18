@@ -1,0 +1,49 @@
+<h2 id="working-with-multiple-rdd-solutions">3.2 : Working With Multiple RDD : Solutions</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td>Scala solution</td>
+</tr>
+</tbody>
+</table>
+<h4 id="start-spark-shell">Start Spark Shell</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1">$   <span class="ex">~/spark/bin/spark-shell</span></a></code></pre></div>
+<h4 id="following-in-scala-shell">Following in Scala shell</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">// scala</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">// load meetups for user &#39;u1&#39;</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">val</span> u1 = sc.<span class="fu">parallelize</span>(List(<span class="st">&quot;m1&quot;</span>, <span class="st">&quot;m2&quot;</span>, <span class="st">&quot;m3&quot;</span>))</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">// load meetups for user &#39;u2&#39;</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="kw">val</span> u2 = sc.<span class="fu">parallelize</span>(List(<span class="st">&quot;m2&quot;</span>, <span class="st">&quot;m3&quot;</span>, <span class="st">&quot;m4&quot;</span>, <span class="st">&quot;m5&quot;</span>))</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">// -- meetups both u1 &amp; u2 go to : intersection</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="kw">val</span> common = u1.<span class="fu">intersection</span>(u2)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">common.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">// Array[String] = Array(m2, m3)</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">// -- meetups attended by either u1 or u2 : union</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="kw">val</span> union = u1.<span class="fu">union</span>(u2)</a>
+<a class="sourceLine" id="cb2-16" data-line-number="16">union.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">// Array[String] = Array(m1, m2, m3, m2, m3, m4, m5)</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">// note there will be dupes in union</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">// to remove dupes use &#39;distinct&#39;</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20">union.<span class="fu">distinct</span>.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">// Array[String] = Array(m1, m2, m3, m4, m5)</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">// -- meetups only u1 attends : subtract</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="kw">val</span> onlyu1 = u1.<span class="fu">subtract</span>(u2)</a>
+<a class="sourceLine" id="cb2-25" data-line-number="25">onlyu1.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">// Array[String] = Array(m1)</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co">// -- meetup recommendations</span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"><span class="co">// find meetups other user is attending, subtract the ones I am already going to</span></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="kw">val</span> recsForU1 = u2.<span class="fu">subtract</span>(u1)</a>
+<a class="sourceLine" id="cb2-32" data-line-number="32">recsForU1.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="co">//  Array[String] = Array(m5, m4)</span></a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="kw">val</span> recsForU2 = u1.<span class="fu">subtract</span>(u2)</a>
+<a class="sourceLine" id="cb2-36" data-line-number="36">recsForU2.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-37" data-line-number="37"><span class="co">// Array[String] = Array(m1) </span></a>
+<a class="sourceLine" id="cb2-38" data-line-number="38"></a></code></pre></div>

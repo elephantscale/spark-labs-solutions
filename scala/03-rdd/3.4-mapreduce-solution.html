@@ -1,0 +1,24 @@
+<h1 id="lab-3.4-mapreduce-solutions">Lab 3.4 : MapReduce Solutions</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td>WordCount</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scala-solution">Scala Solution</h3>
+<h4 id="start-spark-shell">Start Spark Shell</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1">$   <span class="ex">~/spark/bin/spark-shell</span></a></code></pre></div>
+<h4 id="following-in-scala-shell">Following in Scala shell</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co">// scala</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw">val</span> input = Array (<span class="st">&quot;hello world&quot;</span>, <span class="st">&quot;goodbye world&quot;</span>, <span class="st">&quot;bye bye&quot;</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw">val</span> r = sc.<span class="fu">makeRDD</span>(input)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">val</span> wordcount = r.<span class="fu">flatMap</span>(lines =&gt; lines.<span class="fu">split</span>(<span class="st">&quot; &quot;</span>)).<span class="fu">map</span>(word =&gt; (word, <span class="dv">1</span>)).<span class="fu">reduceByKey</span>(_+_)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">wordcount.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">// Array[(String, Int)] = Array((goodbye,1), (hello,1), (world,2), (bye,2))</span></a></code></pre></div>
+<h4 id="step-7-large-files">Step 7: Large files</h4>
+<p>Follow Step 6 to generate data files</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">val</span> f = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/twinkle/100M.data&quot;</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">val</span> wordcount = f.<span class="fu">flatMap</span>(lines =&gt; lines.<span class="fu">split</span>(<span class="st">&quot; &quot;</span>)).<span class="fu">map</span>(word =&gt; (word, <span class="dv">1</span>)).<span class="fu">reduceByKey</span>(_+_)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">wordcount.<span class="fu">collect</span></a></code></pre></div>

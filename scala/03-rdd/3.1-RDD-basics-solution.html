@@ -1,0 +1,75 @@
+<h1 id="rdd-basics-solutions">3.1 RDD Basics solutions</h1>
+<h2 id="step-1-start-spark-shell">Step 1: Start Spark Shell</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1">  $   <span class="ex">~/spark/bin/spark-shell</span></a></code></pre></div>
+<p>The following is in scala shell.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb2-1" data-line-number="1">  <span class="kw">val</span> f = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/twinkle/sample.txt&quot;</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  <span class="kw">val</span> filtered = f.<span class="fu">filter</span>(line =&gt; line.<span class="fu">contains</span>(<span class="st">&quot;twinkle&quot;</span>))  <span class="co">// no-op</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  filtered.<span class="fu">count</span>()  <span class="co">// now spark will process it</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">  filtered.<span class="fu">collect</span>() <span class="co">// see array as output</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  <span class="co">// Array[String] = Array(twinkle twinkle little star, twinkle twinkle little star)</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">  exit <span class="co">// quit shell</span></a></code></pre></div>
+<h2 id="step-2-large-data-sets">Step 2: Large Data sets</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" data-line-number="1">  $   <span class="ex">l</span> /data/twinkle</a></code></pre></div>
+<h2 id="step-3-start-spark-shell-and-connect-to-spark-server">Step 3 : Start Spark shell and connect to Spark Server</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" data-line-number="1">  $     <span class="bu">cd</span>  </a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">  <span class="co"># </span><span class="al">TODO</span><span class="co"> : use the correct spark url for --master</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">  $   <span class="ex">~/spark/bin/spark-shell</span>  --executor-memory 1G --master  spark://localhost:7077</a></code></pre></div>
+<h2 id="step-4-process-a-large-file">Step 4 : Process a large file</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb5-1" data-line-number="1">  <span class="kw">val</span> f = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/twinkle/100M.data&quot;</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">  <span class="co">// count lines containing the word &#39;diamond&#39;</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">  f.<span class="fu">filter</span>(line =&gt; line.<span class="fu">contains</span>(<span class="st">&quot;diamond&quot;</span>)).<span class="fu">count</span>()</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">  <span class="co">// res0: Long = 782519</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">  <span class="co">// count lines does NOT contain &#39;diamond&#39;</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">  f.<span class="fu">filter</span>(line =&gt; !line.<span class="fu">contains</span>(<span class="st">&quot;diamond&quot;</span>)).<span class="fu">count</span>()</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">  <span class="co">// res1: Long = 2347559</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">  <span class="co">// all count</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">  f.<span class="fu">count</span>()</a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">  <span class="co">// res2: Long = 3130078</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15">  <span class="co">// double check count</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16">  <span class="co">// 782519 + 2347559</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">  <span class="co">// res3: Int = 3130078</span></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">  <span class="co">// res3 == res2 ... universe is safe ! :-)</span></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20">  <span class="co">// try with larger files</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21">  <span class="kw">val</span> f2 = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/twinkle/1G.data&quot;</span>)</a>
+<a class="sourceLine" id="cb5-22" data-line-number="22">  <span class="co">// and repeat the above steps</span></a></code></pre></div>
+<h2 id="step-5-loading-multiple-files">Step 5 : Loading multiple files</h2>
+<p>Following is typed in Scala shell</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">  <span class="kw">val</span> rdd = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/twinkle/*.data&quot;</span>)  </a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">  rdd.<span class="fu">count</span>()</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  <span class="co">// res5: Long = 117534419</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  <span class="co">// filter for &#39;diamond&#39;</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">  <span class="kw">val</span> rddf = rdd.<span class="fu">filter</span>(line =&gt; line.<span class="fu">contains</span>(<span class="st">&quot;diamond&quot;</span>))</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">  <span class="co">// save</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">  rddf.<span class="fu">saveAsTextFile</span>(<span class="st">&quot;out1&quot;</span>)</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">  exit</a></code></pre></div>
+<h2 id="inspecting-the-output-dir">Inspecting the output dir:</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" data-line-number="1">  $  <span class="fu">ls</span> -lh  out1</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">  <span class="co"># we will see 121 partitions 00000 --&gt; 00120</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5">  <span class="ex">-rw-r--r--</span>  1 sujee  staff     0B Apr  1 00:46 _SUCCESS</a>
+<a class="sourceLine" id="cb7-6" data-line-number="6">  <span class="ex">-rw-r--r--</span>  1 sujee  staff   6.2M Apr  1 00:46 part-00000</a>
+<a class="sourceLine" id="cb7-7" data-line-number="7">  <span class="ex">-rw-r--r--</span>  1 sujee  staff   6.2M Apr  1 00:46 part-00001</a>
+<a class="sourceLine" id="cb7-8" data-line-number="8">  <span class="ex">-rw-r--r--</span>  1 sujee  staff   6.2M Apr  1 00:46 part-00002</a>
+<a class="sourceLine" id="cb7-9" data-line-number="9">  <span class="ex">...</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10">  <span class="ex">-rw-r--r--</span>  1 sujee  staff   6.2M Apr  1 00:46 part-00119</a>
+<a class="sourceLine" id="cb7-11" data-line-number="11">  <span class="ex">-rw-r--r--</span>  1 sujee  staff   6.2M Apr  1 00:46 part-00120</a></code></pre></div>
+<p>Inspect a file</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb8-1" data-line-number="1">  $   <span class="fu">less</span>  out1/part-00000</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">  <span class="ex">like</span> a diamond in the sky</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">  <span class="ex">like</span> a diamond in the sky</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">  <span class="ex">like</span> a diamond in the sky</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">  <span class="ex">....</span></a></code></pre></div>
+<h2 id="bonus-lab-getting-one-output-file">Bonus Lab : getting ‘one’ output file</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb9-1" data-line-number="1">  <span class="kw">val</span> filtered = ....</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">  <span class="kw">val</span> one = filtered.<span class="fu">coalesce</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">  one.<span class="fu">saveAsTextFile</span>(<span class="st">&quot;out2&quot;</span>)</a></code></pre></div>

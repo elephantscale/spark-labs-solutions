@@ -16,10 +16,10 @@ object OverTCP {
 
     val sparkConf = new SparkConf().setAppName("BlkIPOverTCP")
 
-    // TODO  1 : define window duration  in seconds (e.g. 10)
-    val ssc = new StreamingContext(sparkConf, Seconds(10))
+    // TODO  1 : define window duration for 5 seconds
+    val ssc = new StreamingContext(sparkConf, Seconds(5))
 
-    // listen on port 9999
+    // TODO-2: listen on port 10000, only cache it local memory
     val lines = ssc.socketTextStream("localhost", 10000, StorageLevel.MEMORY_ONLY)
     lines.print
 

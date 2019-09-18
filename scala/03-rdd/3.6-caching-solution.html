@@ -1,0 +1,27 @@
+<h1 id="lab-3.6-caching">Lab 3.6 : Caching</h1>
+<h4 id="create-dataset">Create dataset</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1">$  <span class="bu">cd</span> ~/spark-labs/data/text/twinkle</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">$  <span class="ex">./create-data-files.sh</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># this will create a bunch of files</span></a></code></pre></div>
+<h4 id="start-spark-shell-with-enough-memory">Start Spark Shell with enough memory</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1">$   <span class="ex">~/spark/bin/spark-shell</span>   --executor-memory 4G</a></code></pre></div>
+<h4 id="following-in-scala-shell">Following in Scala shell</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co">// scala</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="kw">val</span> f = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/twinkle/500M.data&quot;</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">f.<span class="fu">count</span>  <span class="co">// note the time took</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">f.<span class="fu">count</span>  <span class="co">// note the time took</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">f.<span class="fu">count</span>  <span class="co">// note the time took</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">f.<span class="fu">cache</span>   <span class="co">// cache in memory</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">// to cache in disk use</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">// f.persist(org.apache.spark.storage.StorageLevel.DISK_ONLY)</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">f.<span class="fu">count</span>  <span class="co">// note the time took</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">f.<span class="fu">count</span>  <span class="co">// note the time took</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">// --- loading data from amazon S3</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="kw">val</span> f = sc.<span class="fu">textFile</span>(<span class="st">&quot;s3n://elephantscale-public/data/text/twinkle/100M.data&quot;</span>)</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">f.<span class="fu">count</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">f.<span class="fu">count</span></a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">f.<span class="fu">cache</span>  <span class="co">// or  f.persist(org.apache.spark.storage.StorageLevel.DISK_ONLY)</span></a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">f.<span class="fu">count</span></a></code></pre></div>

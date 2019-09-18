@@ -1,0 +1,78 @@
+<h1 id="lab-3.5-clickstream-analysis-solutions">Lab 3.5 : Clickstream Analysis Solutions</h1>
+<table>
+<tbody>
+<tr class="odd">
+<td>Analyzing Meetup Data</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scala-solution">Scala Solution</h3>
+<h4 id="start-spark-shell">Start Spark Shell</h4>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1">    $   <span class="ex">~/spark/bin/spark-shell</span></a></code></pre></div>
+<h4 id="following-in-scala-shell">Following in Scala shell</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb2-1" data-line-number="1">    <span class="co">// scala</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">    <span class="kw">val</span> clickstream = sc.<span class="fu">textFile</span>(<span class="st">&quot;/data/click-stream/clickstream.csv&quot;</span>)</a></code></pre></div>
+<h3 id="step-5-counting-domains">step 5 : counting domains</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb3-1" data-line-number="1">    <span class="co">// data format:</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="co">// timestmap, ip_address, user_id,  action,  domain,  campaign_id,  cost, session</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="co">// 1420070400000,ip_1,user_5,clicked,facebook.com,campaign_6,139,session_98</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">    <span class="kw">val</span> domainsKV = clickstream.<span class="fu">map</span>{</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">        line =&gt; {</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">             <span class="kw">val</span> tokens = line.<span class="fu">split</span>(<span class="st">&quot;,&quot;</span>) <span class="co">// split the line</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">             <span class="kw">val</span> domain = <span class="fu">tokens</span>(<span class="dv">4</span>).<span class="fu">trim</span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">             (domain, line) <span class="co">// create a KV pair (domain, record)</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">        }</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">    }</a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">    <span class="kw">val</span> domainCount = domainsKV.<span class="fu">countByKey</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">    <span class="co">//  result =&gt; scala.collection.Map[String,Long] = Map(amazon.com -&gt; 2, funnyordie.com -&gt; 2, nytimes.com -&gt; 1, cnn.com -&gt; 2, youtube.com -&gt; 1, wikipedia.org -&gt; 2, facebook.com -&gt; 2, bbc.co.uk -&gt; 1, npr.org -&gt; 2, foxnews.com -&gt; 3, hulu.com -&gt; 2)</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">    }</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">    <span class="co">// domainCount - one liner</span></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">    clickstream.<span class="fu">map</span>(line =&gt; (line.<span class="fu">split</span>(<span class="st">&quot;,&quot;</span>)(<span class="dv">4</span>), <span class="dv">1</span>)).<span class="fu">reduceByKey</span>(_+_).<span class="fu">collect</span></a></code></pre></div>
+<h3 id="step-6-calculating-spend-per-domain">step 6 : calculating spend per domain</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb4-1" data-line-number="1">    <span class="co">// data layout:</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">    <span class="co">// timestmap, ip_address, user_id,  action,  domain,  campaign_id,  cost, session</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">    <span class="co">// 1420070400000,ip_1,user_5,clicked,facebook.com,campaign_6,139,session_98</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">    <span class="kw">val</span> domainsCosts = clickstream.<span class="fu">map</span>{</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">       line =&gt; {</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">             <span class="kw">val</span> tokens = line.<span class="fu">split</span>(<span class="st">&quot;,&quot;</span>) <span class="co">// split the line</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">             <span class="co">// indexes start at zero</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">             <span class="kw">val</span> domain = <span class="fu">tokens</span>(<span class="dv">4</span>).<span class="fu">trim</span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">             <span class="kw">val</span> cost = <span class="fu">tokens</span>(<span class="dv">6</span>).<span class="fu">trim</span>.<span class="fu">toInt</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">             (domain, cost) <span class="co">// create a KV pair (domain, cost)</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">        }</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">    }</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">    <span class="kw">val</span> spendPerDomain = domainsCosts.<span class="fu">reduceByKey</span>((a,b) =&gt; a+b)</a>
+<a class="sourceLine" id="cb4-15" data-line-number="15">    spendPerDomain.<span class="fu">collect</span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16">    <span class="co">//  result =&gt; Array[(String, Int)] = Array((youtube.com,115), (nytimes.com,19), (npr.org,154), (cnn.com,6), (funnyordie.com,92), (facebook.com,174), (wikipedia.org,287), (foxnews.com,337), (bbc.co.uk,27), (amazon.com,84), (hulu.com,90))</span></a></code></pre></div>
+<h3 id="step-7-find-top-domains">step 7 : find top domains</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode scala"><code class="sourceCode scala"><a class="sourceLine" id="cb5-1" data-line-number="1">    <span class="co">// sort &#39;countByDomains&#39; by frequency</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2">    <span class="co">// sort</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">    domainCount.<span class="fu">toList</span>.<span class="fu">sortBy</span>{_._<span class="dv">2</span>}</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">    <span class="co">// result ==&gt; List[(String, Long)] = List((nytimes.com,1), (youtube.com,1), (bbc.co.uk,1), (amazon.com,2), (funnyordie.com,2), (cnn.com,2), (wikipedia.org,2), (facebook.com,2), (npr.org,2), (hulu.com,2), (foxnews.com,3))</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">    <span class="co">// reverse</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">    domainCount.<span class="fu">toList</span>.<span class="fu">sortBy</span>{_._<span class="dv">2</span>}.<span class="fu">reverse</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">    <span class="co">// result ==&gt; List[(String, Long)] = List((foxnews.com,3), (hulu.com,2), (npr.org,2), (facebook.com,2), (wikipedia.org,2), (cnn.com,2), (funnyordie.com,2), (amazon.com,2), (bbc.co.uk,1), (youtube.com,1), (nytimes.com,1))</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">    <span class="co">// top domain another approach -- one liner</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">    <span class="co">// sorting by values, need to swap (k,v) --&gt; (v,k)</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">    clickstream.<span class="fu">map</span>(line =&gt; (line.<span class="fu">split</span>(<span class="st">&quot;,&quot;</span>)(<span class="dv">4</span>), <span class="dv">1</span>)).<span class="fu">reduceByKey</span>(_+_).</a>
+<a class="sourceLine" id="cb5-14" data-line-number="14">          <span class="fu">map</span>(item =&gt; item.<span class="fu">swap</span>).<span class="fu">sortByKey</span>().<span class="fu">collect</span>()</a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16">    <span class="co">// -- bonus lab 1 : domains where users click most</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">    <span class="kw">val</span> clicksOnly =  clickstream.<span class="fu">filter</span>(line =&gt; line.<span class="fu">split</span>(<span class="st">&quot;,&quot;</span>)(<span class="dv">3</span>) == <span class="st">&quot;clicked&quot;</span>)</a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">    <span class="kw">val</span> clicksOnlydomainsKV = clicksOnly.<span class="fu">map</span>{</a>
+<a class="sourceLine" id="cb5-19" data-line-number="19">        line =&gt; {</a>
+<a class="sourceLine" id="cb5-20" data-line-number="20">             <span class="kw">val</span> tokens = line.<span class="fu">split</span>(<span class="st">&quot;,&quot;</span>) <span class="co">// split the line</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21">             <span class="kw">val</span> domain = <span class="fu">tokens</span>(<span class="dv">4</span>).<span class="fu">trim</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22">             (domain, line) <span class="co">// create a KV pair (domain, record)</span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23">        }</a>
+<a class="sourceLine" id="cb5-24" data-line-number="24">    }</a>
+<a class="sourceLine" id="cb5-25" data-line-number="25">    <span class="kw">val</span> clisksOnlyDomainCount = clicksOnlydomainsKV.<span class="fu">countByKey</span></a>
+<a class="sourceLine" id="cb5-26" data-line-number="26">    <span class="co">// result ==&gt; scala.collection.Map[String,Long] = Map(amazon.com -&gt; 1, nytimes.com -&gt; 1, cnn.com -&gt; 1, youtube.com -&gt; 1, facebook.com -&gt; 1, npr.org -&gt; 1, foxnews.com -&gt; 1)</span></a></code></pre></div>
+<h3 id="bonus-lab-2-find-viewclick-ratio-for-each-domain">bonus lab 2 : Find view/click ratio for each domain</h3>
+<pre><code>// left as an exercise to reader :-)</code></pre>
