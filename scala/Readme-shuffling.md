@@ -26,11 +26,11 @@ It affects join results.
 Go to the project root directory
 
 ```bash
-    $    cd ~/spark-labs/06-api-java
+    $    cd ~/dev/spark-labs/06-api-java
 ```
 
 
-**=> Edit file : `~/spark-labs/06-api-java/src/main/java/spark/basic/Shuffling.java`**  
+**=> Edit file : `~/dev/spark-labs/06-api-java/src/main/java/spark/basic/Shuffling.java`**  
 **=> And fix the TODO items**
 
 
@@ -103,7 +103,7 @@ The file will look follows:
 
 ```bash
     # be in the project root level directory
-    $   cd   ~/spark-labs/06-api-java
+    $   cd   ~/dev/spark-labs/06-api-java
 
     $   mvn package
 
@@ -134,9 +134,9 @@ drwxrwxr-x 2 sujee staff      4096 Jan 23 19:08 test-classes
 ## STEP 3: Test Application in Local Master Mode
 
 ```bash
-    $  cd  ~/spark-labs/06-api-java
+    $  cd  ~/dev/spark-labs/06-api-java
 
-    $   ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar
+    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar
 ```
 
 **==> Checkout the Shell UI (4040)**   
@@ -146,7 +146,7 @@ drwxrwxr-x 2 sujee staff      4096 Jan 23 19:08 test-classes
 **==> Turn off the logs by sending logs by `2> logs` **   
 
 ```bash
-    $   ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar  2> logs
+    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar  2> logs
 ```
 
 
@@ -155,7 +155,7 @@ Now let's submit the application to Spark server
 ## STEP 4: Start Spark Server
 
 ```bash
-    $  ~/spark/sbin/start-all.sh
+    $  ~/dev/spark/sbin/start-all.sh
 ```
 
 **=> Check the Spark Server UI at port 8080.**  
@@ -169,9 +169,9 @@ Now let's submit the application to Spark server
 Use the following command to submit the job
 
 ```bash
-    $  cd  ~/spark-labs/06-api-java
+    $  cd  ~/dev/spark-labs/06-api-java
 
-    $   ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar 2>logs
+    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar 2>logs
 ```
 
 * MASTER URL : substitute your spark master url
@@ -234,7 +234,7 @@ The lines starting with `###` are output from our program
 Redirect the logs as follows `  2> logs`.   
 All logs will be sent to `logs` file.  
 ```bash
-    $  ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar 2>  logs
+    $  ~/dev/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar 2>  logs
 ```
 
 #### Using log4j config
@@ -276,5 +276,5 @@ We provide `--driver-class-path logging/`  to spark-submit to turn off logging
 Here is an example
 
 ```bash
-    $   ~/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  --driver-class-path logging/  target/spark.basic-2.11-jar-with-dependencies.jar   
+    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.Shuffling' --master local[*]  --driver-class-path logging/  target/spark.basic-2.11-jar-with-dependencies.jar   
 ```

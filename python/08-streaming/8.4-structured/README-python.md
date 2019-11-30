@@ -17,7 +17,7 @@ None
 
 ## STEP 1: Go to project directory
 ```bash
-    $ cd ~/spark-labs/08-streaming/8.4-structured/python
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 ```
 
 ## Step 2 : Fix TODO-1
@@ -59,9 +59,9 @@ Open an terminal and run this command at prompt
 
 ```bash
     # be in project root directory
-    $ cd ~/spark-labs/08-streaming/8.4-structured/python
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 
-    $ ~/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
+    $ ~/dev/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
 ```
 
 Lets call this Terminal #2
@@ -142,9 +142,9 @@ Comment TODO-1 before uncommenting the blocks within TODO-2 and TODO-3
 **=>  Hit Ctrl+C  on terminal #2 to kill the running Spark streaming application**
 ```bash
     # be in project root directory
-    $ cd ~/spark-labs/08-streaming/8.4-structured/python
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 
-    $ ~/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
+    $ ~/dev/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
 ```
 
 In the Terminal #1, copy and paste the following lines (these are lines from our clickstream data)

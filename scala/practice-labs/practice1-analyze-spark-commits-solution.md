@@ -6,7 +6,7 @@ http://elephantscale.com/2017/05/processing-csv-files-spark-2-part-1/
 ---
 
 ```bash
-  $  ~/spark/bin/spark-shell
+  $  ~/dev/spark/bin/spark-shell
 ```
 
 An in Spark-shell, step by step

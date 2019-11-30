@@ -18,7 +18,7 @@ None
 
 ## STEP 1: Go to project directory
 ```bash
-    $ cd ~/spark-labs/08-streaming/8.4-structured/python
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 ```
 
 ## Step 2 : Inspect file
@@ -44,9 +44,9 @@ Save the file.
 
 ```bash
     # be in project root directory
-    $ cd ~/spark-labs/08-streaming/8.4-structured
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured
 
-    $ ~/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+    $ ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 
 ```console
@@ -69,9 +69,9 @@ Uncomment code block around TODO-2
 
 ```bash
     # be in project root directory
-    $ cd ~/spark-labs/08-streaming/8.4-structured
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured
     $ rm -f json-input/*  ;  
-        ~/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+        ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 Note : `rm -f json-input/*`  is used to clear the input directory
 
@@ -80,7 +80,7 @@ Leave this terminal running (we will call it Spark terminal)
 Open another terminal and issue the following commands.
 
 ```bash
-    $ cd ~/spark-labs/08-streaming/8.4-structured/
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/
 
     $ ln /data/click-stream/clickstream.json json-input/1.json
 ```
@@ -112,15 +112,15 @@ Run streaming application
 
 ```bash
     # be in project root directory
-    $   cd ~/spark-labs/08-streaming/8.4-structured/python
+    $   cd ~/dev/spark-labs/08-streaming/8.4-structured/python
     $   rm -f json-input/*  ;  
-        ~/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+        ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 
 Copy files into `json-input` directory as follows.
 
 ```bash
-    $   cd ~/spark-labs/08-streaming/8.4-structured
+    $   cd ~/dev/spark-labs/08-streaming/8.4-structured
     $   ln /data/click-stream/clickstream.json json-input/1.json
 ```
 
@@ -178,15 +178,15 @@ Run streaming application
 
 ```bash
     # be in project root directory
-    $ cd ~/spark-labs/08-streaming/8.4-structured
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured
     $ rm -f json-input/*  ;  
-        ~/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+        ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 
 Copy files into `json-input` directory as follows.
 
 ```bash
-    $   cd ~/spark-labs/08-streaming/8.4-structured
+    $   cd ~/dev/spark-labs/08-streaming/8.4-structured
     $   ln /data/click-stream/clickstream.json    json-input/1.json
     $   ln /data/click-stream/clickstream.json    json-input/2.json
     $   ln /data/click-stream/clickstream.json    json-input/3.json

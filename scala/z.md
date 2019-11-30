@@ -18,7 +18,7 @@ STEP 1: Edit source file
 ---------------------
 Go to the project root directory
 ```
-$    cd ~/spark-labs/data/text/twinkle
+$    cd ~/dev/spark-labs/data/text/twinkle
 ```
 
 **edit file : `src/main/scala/x/ProcessFiles.scala`**  
@@ -35,23 +35,23 @@ $    nano  src/main/scala/x/ProcessFiles.scala
 STEP 2: Start Spark Server / Shell
 ----------------------------------
 ```
-$  ~/spark/sbin/start-all.sh
+$  ~/dev/spark/sbin/start-all.sh
 ```
 
 Starting Shell (with 4G memory)
 
 #### == Scala
 ```
-$  ~/spark/bin/spark-shell  --master <spark master uri>  --executor-memory 4G
+$  ~/dev/spark/bin/spark-shell  --master <spark master uri>  --executor-memory 4G
 ```
 
 #### == Python:
 ```
-$   ~/spark/bin/pyspark   --master  spark-server-uri
+$   ~/dev/spark/bin/pyspark   --master  spark-server-uri
 #                                         ^^^^^^^^^^^^^^^^
 #                                    update this to match your spark server
 
-$   ~/spark/bin/pyspark   --master  spark://localhost:7077
+$   ~/dev/spark/bin/pyspark   --master  spark://localhost:7077
 ```
 
 

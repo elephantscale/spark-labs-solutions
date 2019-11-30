@@ -19,7 +19,7 @@ STEP 1: Edit source file
 ---------------------
 Go to the project root directory
 ```bash
-$    cd ~/spark-labs/streaming/lab3
+$    cd ~/dev/spark-labs/streaming/lab3
 ```
 
 **edit file : `src/main/scala/join.scala`**  
@@ -81,7 +81,7 @@ drwxr-xr-x  3 vsistla  staff   102B Apr 16 09:59 classes/
 STEP 3: Run The Application
 --------------------------
 ```
-$  ~/spark-labs/streaming/lab3/sbt run
+$  ~/dev/spark-labs/streaming/lab3/sbt run
 ```
 Note - hope you have modified log4j.properties in conf folder to remove verbose. 
 

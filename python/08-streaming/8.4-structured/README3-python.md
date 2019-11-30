@@ -17,7 +17,7 @@ None
 
 ## STEP 1: Go to project directory
 ```bash
-    $ cd ~/spark-labs/08-streaming/8.4-structured/python
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 ```
 
 ## Step 2 : Fix TODO-1
@@ -59,9 +59,9 @@ Open an terminal and run this command at prompt
 
 ```bash
     # be in project root directory
-    $ cd ~/spark-labs/08-streaming/8.4-structured/python
+    $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 
-    $ ~/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-word-count.py
+    $ ~/dev/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-word-count.py
 ```
 
 Lets call this Terminal #2
