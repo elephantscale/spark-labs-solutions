@@ -127,7 +127,7 @@ drwxrwxr-x 2 sujee staff      4096 Jan 23 19:08 test-classes
 ```bash
     $  cd  ~/dev/spark-labs/07-api-java/advanced.spark
 
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 **==> Checkout the Shell UI (4040)**   
@@ -137,7 +137,7 @@ drwxrwxr-x 2 sujee staff      4096 Jan 23 19:08 test-classes
 **==> Turn off the logs by sending logs by `2> logs` **   
 
 ```bash
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar  2> logs
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar  2> logs
 ```
 
 
@@ -146,7 +146,7 @@ Now let's submit the application to Spark server
 ## STEP 4: Start Spark Server
 
 ```bash
-    $  ~/dev/spark/sbin/start-all.sh
+    $  ~/apps/spark/sbin/start-all.sh
 ```
 
 **=> Check the Spark Server UI at port 8080.**  
@@ -162,7 +162,7 @@ Use the following command to submit the job
 ```bash
     $  cd  ~/dev/spark-labs/07-api-java
 
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar 2>logs
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar 2>logs
 ```
 
 * MASTER URL : substitute your spark master url
@@ -185,7 +185,7 @@ The lines starting with `###` are output from our program
 Redirect the logs as follows `  2> logs`.   
 All logs will be sent to `logs` file.  
 ```bash
-    $  ~/dev/spark/bin/spark-submit --class 'spark.basic.MemoryManagement'  target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar 2>  logs
+    $  ~/apps/spark/bin/spark-submit --class 'spark.basic.MemoryManagement'  target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar 2>  logs
 ```
 
 #### Using log4j config
@@ -227,5 +227,5 @@ We provide `--driver-class-path logging/`  to spark-submit to turn off logging
 Here is an example
 
 ```bash
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' --driver-class-path logging/  target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar   
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.MemoryManagement' --driver-class-path logging/  target/spark.basic-0.0.1-SNAPSHOT-jar-with-dependencies.jar   
 ```

@@ -61,7 +61,7 @@ Open an terminal and run this command at prompt
     # be in project root directory
     $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 
-    $ ~/dev/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
+    $ ~/apps/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
 ```
 
 Lets call this Terminal #2
@@ -144,7 +144,7 @@ Comment TODO-1 before uncommenting the blocks within TODO-2 and TODO-3
     # be in project root directory
     $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 
-    $ ~/dev/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
+    $ ~/apps/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-streaming.py
 ```
 
 In the Terminal #1, copy and paste the following lines (these are lines from our clickstream data)

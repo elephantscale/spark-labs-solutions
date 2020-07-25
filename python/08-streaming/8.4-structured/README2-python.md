@@ -46,7 +46,7 @@ Save the file.
     # be in project root directory
     $ cd ~/dev/spark-labs/08-streaming/8.4-structured
 
-    $ ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+    $ ~/apps/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 
 ```console
@@ -71,7 +71,7 @@ Uncomment code block around TODO-2
     # be in project root directory
     $ cd ~/dev/spark-labs/08-streaming/8.4-structured
     $ rm -f json-input/*  ;  
-        ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+        ~/apps/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 Note : `rm -f json-input/*`  is used to clear the input directory
 
@@ -114,7 +114,7 @@ Run streaming application
     # be in project root directory
     $   cd ~/dev/spark-labs/08-streaming/8.4-structured/python
     $   rm -f json-input/*  ;  
-        ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+        ~/apps/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 
 Copy files into `json-input` directory as follows.
@@ -180,7 +180,7 @@ Run streaming application
     # be in project root directory
     $ cd ~/dev/spark-labs/08-streaming/8.4-structured
     $ rm -f json-input/*  ;  
-        ~/dev/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
+        ~/apps/spark/bin/spark-submit  --master local[2]   --driver-class-path logging/  json_streaming.py
 ```
 
 Copy files into `json-input` directory as follows.

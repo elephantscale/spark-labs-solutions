@@ -61,7 +61,7 @@ Open an terminal and run this command at prompt
     # be in project root directory
     $ cd ~/dev/spark-labs/08-streaming/8.4-structured/python
 
-    $ ~/dev/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-word-count.py
+    $ ~/apps/spark/bin/spark-submit  --master local[2]  --driver-class-path logging/ structured-word-count.py
 ```
 
 Lets call this Terminal #2

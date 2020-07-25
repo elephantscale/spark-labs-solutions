@@ -59,7 +59,7 @@ You should see the "*-with-dependencies.jar"
 ```bash
     $  cd  ~/dev/spark-labs/05-api-java-java
 
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar    README.md
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar    README.md
 ```
 
 **==> Checkout the Shell UI (4040)**   
@@ -69,12 +69,12 @@ You should see the "*-with-dependencies.jar"
 **==> Turn off the logs by sending logs by `2> logs` **   
 
 ```bash
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar    README.md  2> logs
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar    README.md  2> logs
 ```
 
 **==> Try a few input files **
 ```bash
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar    /data/text/twinkle/*  2> logs
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  target/spark.basic-2.11-jar-with-dependencies.jar    /data/text/twinkle/*  2> logs
 ```
 
 
@@ -83,7 +83,7 @@ Now let's submit the application to Spark server
 ## STEP 4: Start Spark Server
 
 ```bash
-    $  ~/dev/spark/sbin/start-all.sh
+    $  ~/apps/spark/sbin/start-all.sh
 ```
 
 **=> Check the Spark Server UI at port 8080.**  
@@ -100,10 +100,10 @@ Use the following command to submit the job
     $  cd  ~/dev/spark-labs/05-api-java
 
     # single README file
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar    README.md   2> logs
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar    README.md   2> logs
 
     # multiple twinkle files
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar    /data/text/twinkle/*  2> logs
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar    /data/text/twinkle/*  2> logs
 ```
 
 * MASTER URL : substitute your spark master url
@@ -128,7 +128,7 @@ The lines starting with `###` are output from our program
 Redirect the logs as follows `  2> logs`.   
 All logs will be sent to `logs` file.  
 ```bash
-    $  ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar    <files to process>    2>  logs
+    $  ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master MASTER_URL  target/spark.basic-2.11-jar-with-dependencies.jar    <files to process>    2>  logs
 ```
 
 #### Using log4j config
@@ -170,5 +170,5 @@ We provide `--driver-class-path logging/`  to spark-submit to turn off logging
 Here is an example
 
 ```bash
-    $   ~/dev/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  --driver-class-path logging/  target/spark.basic-2.11-jar-with-dependencies.jar    README.md
+    $   ~/apps/spark/bin/spark-submit --class 'spark.basic.ProcessFiles' --master local[*]  --driver-class-path logging/  target/spark.basic-2.11-jar-with-dependencies.jar    README.md
 ```

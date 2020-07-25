@@ -35,23 +35,23 @@ $    nano  src/main/scala/x/ProcessFiles.scala
 STEP 2: Start Spark Server / Shell
 ----------------------------------
 ```
-$  ~/dev/spark/sbin/start-all.sh
+$  ~/apps/spark/sbin/start-all.sh
 ```
 
 Starting Shell (with 4G memory)
 
 #### == Scala
 ```
-$  ~/dev/spark/bin/spark-shell  --master <spark master uri>  --executor-memory 4G
+$  ~/apps/spark/bin/spark-shell  --master <spark master uri>  --executor-memory 4G
 ```
 
 #### == Python:
 ```
-$   ~/dev/spark/bin/pyspark   --master  spark-server-uri
+$   ~/apps/spark/bin/pyspark   --master  spark-server-uri
 #                                         ^^^^^^^^^^^^^^^^
 #                                    update this to match your spark server
 
-$   ~/dev/spark/bin/pyspark   --master  spark://localhost:7077
+$   ~/apps/spark/bin/pyspark   --master  spark://localhost:7077
 ```
 
 
