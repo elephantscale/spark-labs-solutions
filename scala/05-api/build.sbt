@@ -4,11 +4,11 @@ name := "TestApp"
 
 version := "1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.12"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "2.4.5" % "provided",
-  "org.apache.spark" %% "spark-sql" % "2.4.5" % "provided"
+  "org.apache.spark" %% "spark-core" % "3.0.1" % "provided",
+  "org.apache.spark" %% "spark-sql" % "3.0.1" % "provided"
 )
 
 // for accessing files from S3 or HDFS
@@ -22,4 +22,6 @@ excludeFilter in (Compile, unmanagedSources) ~= { _ ||
   new FileFilter {
     def accept(f: File) = f.getPath.containsSlice("/.ipynb_checkpoints/")
   } }
+
+
 

@@ -3,8 +3,11 @@ package x
 import org.apache.spark.sql.SparkSession
 
 /*
-Usage:
-spark-submit --class 'x.ProcessFiles' --master spark://localhost:7077  target/scala-2.11/testapp_2.11-1.0.jar    <files to process>
+Usage: local mode
+    $   $SPARK_HOME/bin/spark-submit --class 'x.ProcessFiles'   target/scala-2.12/testapp_2.12-1.0.jar     <files to process>
+
+local master
+    $    $SPARK_HOME/bin/spark-submit --class 'x.ProcessFiles' --master local[*]   target/scala-2.12/testapp_2.12-1.0.jar      <files to process>
 
 Multiple files can be specified
 file to process can be :  /etc/hosts
@@ -14,7 +17,7 @@ file to process can be :  /etc/hosts
 
 e.g:
 - with 4G executor memory and turning off verbose logging
-    spark-submit --class x.ProcessFiles  --master spark://localhost:7077 --executor-memory 4g   --driver-class-path logging/   target/scala-2.11/testapp_2.11-1.0.jar   s3n:///elephantscale-public/data/twinkle/1G.data
+    $    $SPARK_HOME/bin/spark-submit --class x.ProcessFiles  --master spark://localhost:7077 --executor-memory 4g   --driver-class-path logging/    target/scala-2.12/testapp_2.12-1.0.jar   s3n:///elephantscale-public/data/twinkle/1G.data
 
 */
 
@@ -33,11 +36,8 @@ object ProcessFiles {
 
     var file = ""
     for (file <- args) { // looping over files
-      // ## TODO 2 : create an RDD out of file
-      //    hint :  spark.read.textFile(file)
       val f = spark.read.textFile(file)
       val t1 = System.nanoTime()
-      // ## TODO 3 : count # of elements in RDD
       val count = f.count
 
       val t2 = System.nanoTime()
