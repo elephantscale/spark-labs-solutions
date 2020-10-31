@@ -9,7 +9,6 @@
 08-streaming
 README-python.ipynb
 README-scala.md
-README.md
 README.txt
 Readme-MapSide-join.md
 Readme-shuffling.md
@@ -17,12 +16,10 @@ advanced.spark
 assets
 init_spark.py
 java
-lab-assembly.txt
 logging
 practice-labs
 python-modules.txt
 run-jupyter.sh
 setup-local.ipynb
 setup-vm-python.ipynb
-spark-labs-solutions.zip
 test-all.sh
