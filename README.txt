@@ -6,7 +6,7 @@ There are two tracks.
 ## To Instructor
 Please run
 ```
-    ./package-labs.sh
+    ./assemble-labs.sh
 ```
 To update HTML files and create a zip bundle
 
