@@ -11,7 +11,7 @@ import org.apache.spark.ml.linalg.Vectors
 val dataset = spark.read.
               option("header", "true").
               option("inferschema", "true").
-              csv("/data/cars/mtcars_header.csv")
+              csv("../data/cars/mtcars_header.csv")
 dataset.show(32) // 32 data points, show all
 
 // extract the columns we need
