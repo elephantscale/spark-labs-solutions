@@ -6,18 +6,17 @@ import scala.sys.process.Process
 class ProcessFileTest extends Specification {
   "ProcessFiles" should {
     "submit a Spark job" in {
-      val home = System.getProperty("user.home")
-      val project = System.getProperty("user.dir")
-      val testRun = home +
-        "/spark/bin/spark-submit" +
+      //val project = System.getProperty("user.dir")
+      val testRun = "/home/mark/apps/spark/bin/spark-submit" +
+        " --master spark://mark-workstation:7077" +
         " --class x.ProcessFiles" +
-        " " + project + "/" + "target/scala-2.11/testapp_2.11-1.0.jar" + " /data/text/twinkle/1G.data"
+        " target/scala-2.12/testapp_2.12-1.0.jar" + " /data/text/twinkle/*.data"
 
-        println("testSparkSubmit")
+      println("Shalom, testSparkSubmit")
       println("Run command: " + testRun)
       val line = Process(testRun).lineStream.headOption
-      println(line.get)
-      line.get.contains("count:  31,300,777 ")
+      println("Output line: " + line.get)
+      line.get.contains("count:  123,794,576 ")
     }
   }
 }
